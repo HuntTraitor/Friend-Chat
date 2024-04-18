@@ -10,6 +10,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import {NavigationContext} from '../context/Navigation';
 import { LoginContext } from '@/context/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
+import PeopleIcon from '@mui/icons-material/People';
 
 /**
  *
@@ -50,18 +51,16 @@ export default function BottomBar() {
             },
           }}
         >
-          <BottomNavigationAction label="Home"
+          <BottomNavigationAction
             aria-label="Home"
             icon={<HomeIcon />}
             disabled={navigation === 0}
           />
           <BottomNavigationAction
-            label="Search"
-            aria-label="Search"
-            icon={<SearchIcon />}
+            aria-label="Friends"
+            icon={<PeopleIcon />}
           />
           <BottomNavigationAction
-            label="Logout"
             aria-label="Logout"
             icon={<LogoutIcon />}
             onClick={logout}
