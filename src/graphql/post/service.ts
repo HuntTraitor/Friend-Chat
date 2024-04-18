@@ -6,7 +6,8 @@ export class PostService {
     const insert = `INSERT INTO post(member_id, data) VALUES($1, 
       jsonb_build_object('posted', current_timestamp, 'content', $2::text, 'image', $3::text)) 
       RETURNING id, 
-      member_id AS member, 
+      (SELECT jsonb_build_object('id', member.id, 'name', member.data->>'name')
+        FROM member WHERE member.id = $1) AS member,
       data->>'posted' AS posted, 
       data->>'content' AS content,
       data->>'image' AS image`
@@ -19,6 +20,7 @@ export class PostService {
     return rows[0]
   }
 
+  //adding member part of the query :D
   public async getAll(page: number, size: number|undefined, memberId: string|undefined): Promise<Post[]> {
     if (size === undefined) {
       size = 20
@@ -26,12 +28,13 @@ export class PostService {
 
     const offset = (size * page) - size
 
-    const select = `SELECT id, 
-    member_id AS member, 
-    data->>'posted' AS posted, 
-    data->>'content' AS content,
-    data->>'image' AS image
-    FROM post WHERE member_id = $1
+    const select = `SELECT post.id, 
+    jsonb_build_object('id', member.id, 'name', member.data->>'name') AS member,
+    post.data->>'posted' AS posted, 
+    post.data->>'content' AS content,
+    post.data->>'image' AS image
+    FROM post LEFT OUTER JOIN member ON member.id = member_id
+    WHERE member_id = $1
     OR member_id IN (
       (SELECT member_id 
       FROM member_friend 
@@ -42,7 +45,7 @@ export class PostService {
       FROM member_friend 
       WHERE member_id = $1
       AND accepted = true))
-    ORDER BY data->>'posted' DESC
+    ORDER BY post.data->>'posted' DESC
     LIMIT $2 OFFSET $3`;
 
     const query = {

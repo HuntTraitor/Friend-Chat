@@ -11,7 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
 
 const fetchPosts = (setPosts: Function, setError: Function, accessToken: string) => {
-  const query = {query: `query post { post(page: 1 size: 20) {id posted content image}}`}
+  const query = {query: `query post { post(page: 1 size: 20) {id member {id name} posted content image}}`}
   fetch('/api/graphql', {
     method: 'POST',
     body: JSON.stringify(query),
@@ -63,7 +63,7 @@ export default function PostPage() {
     const query = {query: `mutation makePost{makePost(input: {
       content: "${messageInput}"
     }) {
-      id posted content image
+      id member {id name} posted content image
     }}`}
 
     fetch('/api/graphql', {

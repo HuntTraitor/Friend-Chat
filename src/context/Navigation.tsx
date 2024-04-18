@@ -6,8 +6,6 @@ export const NavigationContext = createContext({
 });
 
 export const NavigationProvider = ({ children }: PropsWithChildren<{}>) => {
-  // const [userName, setUserName] = useState('')
-  // const [accessToken, setAccessToken] = useState('');
   const [navigation, setNavigation] = useState(0)
   return (
     <NavigationContext.Provider value={{navigation, setNavigation}}>

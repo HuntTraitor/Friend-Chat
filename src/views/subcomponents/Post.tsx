@@ -12,7 +12,7 @@ export function Post({post}: any) {
     <div>
       <div className={styles.headerContainer}>
         <Avatar aria-label="profile pic" />
-        <p className={styles.username}>{post.id}</p>
+        <p className={styles.username}>{post.member.name}</p>
         <p className={styles.date}>{post.posted}</p>
       </div>
       <div className={styles.content}>

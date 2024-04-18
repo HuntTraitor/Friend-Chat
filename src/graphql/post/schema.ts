@@ -1,5 +1,6 @@
 import {Field, ObjectType, InputType, ArgsType, Int, ID, GraphQLISODateTime} from "type-graphql"
 import {IsNotEmpty, IsInt, Min} from "class-validator"
+import { Member } from "../member/schema"
 
 @ObjectType()
 @InputType("PostInput")
@@ -8,6 +9,8 @@ export class Post {
     id!: string
   @Field(() => GraphQLISODateTime)
     posted!: string
+  @Field(() => Member)
+    member!: Member
   @Field()
     content!: string
   @Field({nullable: true})
