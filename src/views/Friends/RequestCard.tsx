@@ -6,8 +6,11 @@ import * as React from 'react'
 import { LoginContext } from '@/context/Login';
 import { FriendsContext } from '@/context/Friends';
 import { Confirmation } from '../Confirmation';
+import { RequestContext } from '@/context/Requests';
 
-const acceptFriend = (friend: any, setFriends: Function, friends: any, accessToken: string) => {
+const acceptFriend = (friend: any, setFriends: Function, friends: any, requestContext: any, accessToken: string) => {
+  const requests = requestContext.requests
+  const setRequests = requestContext.setRequests
   const query = {query: `mutation accpetRequest{acceptRequest(input: {
     memberId: "${friend.id}"
   }) {
@@ -30,6 +33,10 @@ const acceptFriend = (friend: any, setFriends: Function, friends: any, accessTok
       console.error(json.errors)
     } else {
       setFriends([...friends, friend])
+      setRequests({
+        inbound: requests.inbound.filter((request: any) => request.id !== friend.id),
+        outbound: requests.outbound
+      })
     }
   })
 }
@@ -38,6 +45,7 @@ export function RequestCard({friend, bound}: any) {
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
   const loginContext = React.useContext(LoginContext)
   const {friends, setFriends} = React.useContext(FriendsContext)
+  const requestContext = React.useContext(RequestContext)
 
 
   const handleConfirmationOpen = () => {
@@ -47,8 +55,6 @@ export function RequestCard({friend, bound}: any) {
   const handleConfirmationClose = () => {
     setOpenConfirmation(false);
   };
-
-  console.log(friends)
   return (
     <Grid container alignItems="center" spacing={2}>
       <Grid item>
@@ -74,7 +80,7 @@ export function RequestCard({friend, bound}: any) {
           setOpen={setOpenConfirmation}
           title={`Are you sure you want to accept ${friend.name} as a friend?`}
           content={"This will allow you to see all of their posts"}
-          trigger={() => acceptFriend(friend, setFriends, friends, loginContext.accessToken)}
+          trigger={() => acceptFriend(friend, setFriends, friends, requestContext, loginContext.accessToken)}
         />
       </Grid>
     </Grid>
