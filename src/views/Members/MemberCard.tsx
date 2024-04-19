@@ -33,7 +33,6 @@ const sendRequest = (friend: any, requestsContext: any, members: any, setMembers
     if (json.errors) {
       console.error(json.errors)
     } else {
-      console.log(json)
       setMembers(members.filter((deletedMember: any) => deletedMember.id !== friend.id))
       setRequests({
         inbound: requests.inbound,
