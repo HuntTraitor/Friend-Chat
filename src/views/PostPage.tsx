@@ -9,6 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SendIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
+import { FriendsContext } from '@/context/Friends';
 
 const fetchPosts = (setPosts: Function, setError: Function, accessToken: string) => {
   const query = {query: `query post { post(page: 1 size: 20) {id member {id name} posted content image}}`}
@@ -42,6 +43,11 @@ export default function PostPage() {
   const loginContext = React.useContext(LoginContext)
   const [posts, setPosts] = React.useState<any[]>([])
   const [error, setError] = React.useState('Logged out')
+  const {friends, setFriends} = React.useContext(FriendsContext)
+
+
+
+
   const [messageInput, setMessageInput] = React.useState('');
   const handleInputChange = (event: any) => {
     setMessageInput(event.target.value);
@@ -49,7 +55,7 @@ export default function PostPage() {
 
   React.useEffect(() => {
     fetchPosts(setPosts, setError, loginContext.accessToken);
-  }, [loginContext.accessToken])
+  }, [loginContext.accessToken, friends])
 
   React.useEffect(() => {
     if (error === "Access denied! You don't have permission for this action!") {

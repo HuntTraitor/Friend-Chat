@@ -11,6 +11,7 @@ import {NavigationContext} from '../context/Navigation';
 import { LoginContext } from '@/context/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PeopleIcon from '@mui/icons-material/People';
+import { OpenFriendsContext } from '@/context/OpenFriends';
 
 /**
  *
@@ -19,6 +20,7 @@ import PeopleIcon from '@mui/icons-material/People';
 export default function BottomBar() {
   const loginContext = React.useContext(LoginContext)
   const {navigation, setNavigation} = React.useContext(NavigationContext);
+  const {openFriends, setOpenFriends} = React.useContext(OpenFriendsContext)
   const ref = React.useRef(null);
 
   const logout = () => {
@@ -38,7 +40,7 @@ export default function BottomBar() {
         elevation={3}>
         <BottomNavigation
           showLabels
-          value={navigation}
+          value={0}
           onChange={(event, newValue) => {
             setNavigation(newValue);
           }}
@@ -59,6 +61,7 @@ export default function BottomBar() {
           <BottomNavigationAction
             aria-label="Friends"
             icon={<PeopleIcon />}
+            onClick={() => setOpenFriends(true)}
           />
           <BottomNavigationAction
             aria-label="Logout"

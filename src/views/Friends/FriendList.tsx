@@ -12,6 +12,26 @@ import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { NavigationContext } from '@/context/Navigation';
+import { OpenFriendsContext } from '@/context/OpenFriends';
+import { LoginContext } from '@/context/Login';
+import FriendCard from './FriendCard';
+import { ListItem } from '@mui/material';
+import {RequestCard} from './RequestCard';
+import { FriendsContext, FriendsProvider } from '@/context/Friends';
+
+interface FriendRequest {
+  inbound: Array<{
+    id: string;
+    name: string;
+  }>;
+  outbound: Array<{
+    id: string;
+    name: string;
+  }>; 
+}
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -19,28 +39,100 @@ const Transition = React.forwardRef(function Transition(
   },
   ref: React.Ref<unknown>,
 ) {
-  return <Slide direction="up" ref={ref} {...props} />;
+  return <Slide direction="left" ref={ref} {...props} />;
 });
 
+const fetchFriends = (setFriends: Function, setError: Function, accessToken: string) => {
+  const query = {query: `{friend {id name}}`}
+  fetch('/api/graphql', {
+    method: 'POST',
+    body: JSON.stringify(query),
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  })
+    .then((res) => {
+      return res.json()
+    })
+    .then((json) => {
+      if (json.errors) {
+        setError(`${json.errors[0].message}`)
+        setFriends([])
+      } else {
+        setError('')
+        setFriends(json.data.friend)
+      }
+    })
+    .catch((e: Error) => {
+      setError(e.toString())
+      alert(e.toString())
+    })
+}
+
+const fetchReqeusts = (setRequests: Function, setError: Function, accessToken: string) => {
+  const query = {query: `{request {
+    inbound {id name}
+    outbound {id name}
+  }}`}
+  fetch('/api/graphql', {
+    method: 'POST',
+    body: JSON.stringify(query),
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  })
+  .then((res) => {
+    return res.json()
+  })
+  .then((json) => {
+    if (json.errors) {
+      setError(`${json.errors[0].message}`)
+      setRequests([])
+    } else {
+      setError('')
+      setRequests(json.data.request)
+    }
+  })
+  .catch((e) => {
+    setError(e.toString())
+    alert(e.toString())
+  })
+}
+
 export function FriendList() {
-  const [open, setOpen] = React.useState(false);
+  const {openFriends, setOpenFriends} = React.useContext(OpenFriendsContext)
+  const loginContext = React.useContext(LoginContext)
+  const {friends, setFriends} = React.useContext(FriendsContext)
+  const [requests, setRequests] = React.useState<FriendRequest>({inbound: [], outbound: []})
+  const [error, setError] = React.useState('Logged out')
+
+  React.useEffect(() => {
+    fetchFriends(setFriends, setError, loginContext.accessToken)
+    fetchReqeusts(setRequests, setError, loginContext.accessToken)
+  }, [loginContext.accessToken])
+
+  React.useEffect(() => {
+    if (error === "Access denied! You don't have permission for this action!") {
+      loginContext.setAccessToken('')
+      localStorage.removeItem('accessToken')
+    }
+  }, [error])
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setOpenFriends(true);
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setOpenFriends(false);
   };
 
   return (
     <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open full-screen dialog
-      </Button>
       <Dialog
         fullScreen
-        open={open}
+        open={openFriends}
         onClose={handleClose}
         TransitionComponent={Transition}
       >
@@ -52,27 +144,38 @@ export function FriendList() {
               onClick={handleClose}
               aria-label="close"
             >
-              <CloseIcon />
+              <ArrowBackIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Sound
+              Friends
             </Typography>
             <Button autoFocus color="inherit" onClick={handleClose}>
-              save
+              <PersonAddIcon />
             </Button>
           </Toolbar>
         </AppBar>
         <List>
-          <ListItemButton>
-            <ListItemText primary="Phone ringtone" secondary="Titania" />
-          </ListItemButton>
-          <Divider />
-          <ListItemButton>
-            <ListItemText
-              primary="Default notification ringtone"
-              secondary="Tethys"
-            />
-          </ListItemButton>
+          {friends && 
+            friends.map((friend: any) => (
+              <ListItem key={friend.id}>
+                <FriendCard friend={friend}/>
+              </ListItem>
+            ))}
+        </List>
+        <Divider />
+        <List>
+          {requests &&
+            requests.outbound.map((request: any) => (
+              <ListItem key={request.id}>
+                <RequestCard friend={request} bound={"outbound"}/>
+              </ListItem>
+            ))}
+            {requests &&
+              requests.inbound.map((request: any) => (
+              <ListItem key={request.id}>
+                <RequestCard friend={request} bound={"inbound"}/>
+              </ListItem>
+            ))}
         </List>
       </Dialog>
     </React.Fragment>
