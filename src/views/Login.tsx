@@ -67,7 +67,7 @@ export function Login() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            CSE187 Assignment 3
           </Typography>
           <Box component="form" onSubmit={onSubmit} noValidate sx={{mt: 1}}>
             <TextField
