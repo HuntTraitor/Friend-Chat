@@ -32,11 +32,8 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const fetchMembers = (setRequests: Function, setError: Function, accessToken: string) => {
-  const query = {query: `{request {
-    inbound {id name}
-    outbound {id name}
-  }}`}
+const fetchMembers = (setMembers: Function, accessToken: string) => {
+  const query = {query: `{member {id name}}`}
   fetch('/api/graphql', {
     method: 'POST',
     body: JSON.stringify(query),
@@ -50,15 +47,14 @@ const fetchMembers = (setRequests: Function, setError: Function, accessToken: st
   })
   .then((json) => {
     if (json.errors) {
-      setError(`${json.errors[0].message}`)
-      setRequests([])
+      console.error(json.errors)
+      setMembers([])
     } else {
-      setError('')
-      setRequests(json.data.request)
+      setMembers(json.data.member)
     }
   })
   .catch((e) => {
-    setError(e.toString())
+    console.error(e)
     alert(e.toString())
   })
 }
@@ -66,24 +62,11 @@ const fetchMembers = (setRequests: Function, setError: Function, accessToken: st
 export function MemberList() {
   const {openMembers, setOpenMembers} = React.useContext(OpenMembersContext)
   const [members, setMembers] = React.useState([])
-  console.log(openMembers)
   const loginContext = React.useContext(LoginContext)
-  // const {friends, setFriends} = React.useContext(FriendsContext)
-  // const {requests, setRequests} = React.useContext(RequestContext)
-  // const [requests, setRequests] = React.useState<FriendRequest>({inbound: [], outbound: []})
-  // const [error, setError] = React.useState('Logged out')
 
-  // React.useEffect(() => {
-  //   fetchFriends(setFriends, setError, loginContext.accessToken)
-  //   fetchReqeusts(setRequests, setError, loginContext.accessToken)
-  // }, [loginContext.accessToken])
-
-  // React.useEffect(() => {
-  //   if (error === "Access denied! You don't have permission for this action!") {
-  //     loginContext.setAccessToken('')
-  //     localStorage.removeItem('accessToken')
-  //   }
-  // }, [error])
+  React.useEffect(() => {
+    fetchMembers(setMembers, loginContext.accessToken)
+  }, [loginContext.accessToken])
 
   const handleClickOpen = () => {
     setOpenMembers(true);
@@ -120,7 +103,7 @@ export function MemberList() {
           {members && 
             members.map((member: any) => (
               <ListItem key={member.id}>
-                <MemberCard member={member} />
+                <MemberCard member={member} members={members} setMembers={setMembers} />
               </ListItem>
             ))}
         </List>
