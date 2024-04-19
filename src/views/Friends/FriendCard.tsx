@@ -27,7 +27,6 @@ const removeFriend = (friend: any, setFriends: Function, friends: any, accessTok
       if (json.errors) {
         console.error(json.errors)
       } else {
-        console.log(json)
         setFriends(friends.filter((deletedFriend: any) => deletedFriend.id !== friend.id))
       }
     })
@@ -39,7 +38,6 @@ export default function FriendCard({friend}: any) {
   const loginContext = React.useContext(LoginContext)
   const {friends, setFriends} = React.useContext(FriendsContext)
 
-  console.log(friends)
 
   const handleConfirmationOpen = () => {
     setOpenConfirmation(true);

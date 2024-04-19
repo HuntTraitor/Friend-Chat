@@ -45,9 +45,6 @@ export default function PostPage() {
   const [error, setError] = React.useState('Logged out')
   const {friends, setFriends} = React.useContext(FriendsContext)
 
-
-
-
   const [messageInput, setMessageInput] = React.useState('');
   const handleInputChange = (event: any) => {
     setMessageInput(event.target.value);
@@ -89,7 +86,6 @@ export default function PostPage() {
           setError(`${json.errors[0].message}`)
         } else {
           setError('')
-          console.log(json.data)
           setPosts([json.data.makePost, ...posts])
           setMessageInput('')
         }

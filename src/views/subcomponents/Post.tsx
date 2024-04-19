@@ -16,7 +16,10 @@ export function Post({post}: any) {
         <p className={styles.date}>{post.posted}</p>
       </div>
       <div className={styles.content}>
-        {post.content}
+        {post.image && <img src={post.image} alt="Post Image" />}
+        <div>
+          {post.content}
+        </div>
       </div>
     </div>
   );

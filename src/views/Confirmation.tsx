@@ -11,7 +11,7 @@ interface ConfirmationProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   content: string;
-  trigger?: Function;
+  trigger: Function;
 }
 
 export function Confirmation({open, setOpen, title, content, trigger}: ConfirmationProps) {
@@ -19,10 +19,12 @@ export function Confirmation({open, setOpen, title, content, trigger}: Confirmat
     setOpen(true);
   };
 
+  const accept = () => {
+    trigger()
+    setOpen(false)
+  }
+
   const handleClose = () => {
-    if (trigger) {
-      trigger()
-    }
     setOpen(false);
   };
 
@@ -44,7 +46,7 @@ export function Confirmation({open, setOpen, title, content, trigger}: Confirmat
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={accept} autoFocus>
             Agree
           </Button>
         </DialogActions>
