@@ -33,7 +33,7 @@ const Transition = React.forwardRef(function Transition(
 });
 
 const fetchMembers = (setMembers: Function, accessToken: string) => {
-  const query = {query: `{nonFriendMember {id name}}`}
+  const query = {query: `query nonFriendMember{nonFriendMember {id name}}`}
   fetch('/api/graphql', {
     method: 'POST',
     body: JSON.stringify(query),
@@ -68,9 +68,11 @@ export function MemberList() {
     fetchMembers(setMembers, loginContext.accessToken)
   }, [loginContext.accessToken])
 
-  const handleClickOpen = () => {
-    setOpenMembers(true);
-  };
+  // console.log(openMembers)
+
+  // const handleClickOpen = () => {
+  //   setOpenMembers(true);
+  // };
 
   const handleClose = () => {
     setOpenMembers(false);
@@ -90,7 +92,7 @@ export function MemberList() {
               edge="start"
               color="inherit"
               onClick={handleClose}
-              aria-label="close"
+              aria-label="member close"
             >
               <ArrowBackIcon />
             </IconButton>

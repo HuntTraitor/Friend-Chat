@@ -39,6 +39,9 @@ const acceptFriend = (friend: any, setFriends: Function, friends: any, requestCo
       })
     }
   })
+  .catch((e) => {
+    alert(e.toString())
+  })
 }
 
 export function RequestCard({friend, bound}: any) {
@@ -52,13 +55,13 @@ export function RequestCard({friend, bound}: any) {
     setOpenConfirmation(true);
   };
 
-  const handleConfirmationClose = () => {
-    setOpenConfirmation(false);
-  };
+  // const handleConfirmationClose = () => {
+  //   setOpenConfirmation(false);
+  // };
   return (
     <Grid container alignItems="center" spacing={2}>
       <Grid item>
-        <Avatar />
+        <Avatar aria-label='Request Avatar'/>
       </Grid>
       <Grid item xs>
         <Typography id={"123"} variant="body1" component="div">
@@ -69,11 +72,11 @@ export function RequestCard({friend, bound}: any) {
         <IconButton
           onClick={ bound === "inbound" ? handleConfirmationOpen: undefined}
         >
-          { bound === "outbound" && <OutboundIcon />}
-          { bound === "inbound" && <CheckCircleOutlineIcon/> }
+          { bound === "outbound" && <OutboundIcon aria-label='Outbound Icon'/> }
+          { bound === "inbound" && <CheckCircleOutlineIcon aria-label='Inbound Icon'/> }
         </IconButton>
         <IconButton>
-          <PersonRemoveIcon />
+          <PersonRemoveIcon aria-label='Remove Request Icon'/>
         </IconButton>
         <Confirmation 
           open={openConfirmation}

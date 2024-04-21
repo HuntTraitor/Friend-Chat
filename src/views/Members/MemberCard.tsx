@@ -42,6 +42,7 @@ const sendRequest = (friend: any, requestsContext: any, members: any, setMembers
   })
   .catch((e) => {
     console.error(e)
+    alert(e.toString())
   })
 }
 
@@ -54,13 +55,13 @@ export function MemberCard({member, members, setMembers}: any) {
     setOpenConfirmation(true);
   };
 
-  const handleConfirmationClose = () => {
-    setOpenConfirmation(false);
-  };
+  // const handleConfirmationClose = () => {
+  //   setOpenConfirmation(false);
+  // };
   return (
     <Grid container alignItems="center" spacing={2}>
       <Grid item>
-        <Avatar />
+        <Avatar aria-label='Member Avatar'/>
       </Grid>
       <Grid item xs>
         <Typography id={"123"} variant="body1" component="div">
@@ -69,7 +70,7 @@ export function MemberCard({member, members, setMembers}: any) {
       </Grid>
       <Grid item>
         <IconButton onClick={handleConfirmationOpen}>
-          <PersonAddIcon />
+          <PersonAddIcon aria-label='Add Member Icon'/>
         </IconButton>
         <Confirmation 
           open={openConfirmation}

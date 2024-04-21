@@ -8,16 +8,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 interface ConfirmationProps {
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: Function;
   title: string;
   content: string;
   trigger: Function;
 }
 
 export function Confirmation({open, setOpen, title, content, trigger}: ConfirmationProps) {
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  // const handleClickOpen = () => {
+  //   setOpen(true);
+  // };
 
   const accept = () => {
     trigger()
