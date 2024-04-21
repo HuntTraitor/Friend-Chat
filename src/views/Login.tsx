@@ -24,7 +24,7 @@ export function Login() {
   const onSubmit = (event: any) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const query = {query: `query {login(email: "${data.get('email')}" password: "${data.get('password')}") {name, accessToken}}`};
+    const query = {query: `query login{login(email: "${data.get('email')}" password: "${data.get('password')}") {name, accessToken}}`};
     fetch('/api/graphql', {
       method: 'POST',
       body: JSON.stringify(query),
@@ -93,7 +93,7 @@ export function Login() {
               aria-label="Password"
             />
             <FormControlLabel
-              control={<Checkbox checked={checked} onChange={() => setChecked(!checked)} value="remember" color="primary" />}
+              control={<Checkbox checked={checked} onChange={() => setChecked(!checked)} value="remember" color="primary" aria-label='Remember me checkbox'/>}
               label="Remember me"
             />
             <Button

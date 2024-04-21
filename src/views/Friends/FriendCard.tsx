@@ -30,6 +30,9 @@ const removeFriend = (friend: any, setFriends: Function, friends: any, accessTok
         setFriends(friends.filter((deletedFriend: any) => deletedFriend.id !== friend.id))
       }
     })
+    .catch((e) => {
+      alert(e.toString())
+    })
 }
 
 
@@ -43,13 +46,13 @@ export default function FriendCard({friend}: any) {
     setOpenConfirmation(true);
   };
 
-  const handleConfirmationClose = () => {
-    setOpenConfirmation(false);
-  };
+  // const handleConfirmationClose = () => {
+  //   setOpenConfirmation(false);
+  // };
   return (
     <Grid container alignItems="center" spacing={2}>
       <Grid item>
-        <Avatar />
+        <Avatar aria-label='Profile Avatar'/>
       </Grid>
       <Grid item xs>
         <Typography id={"123"} variant="body1" component="div">
@@ -57,7 +60,7 @@ export default function FriendCard({friend}: any) {
         </Typography>
       </Grid>
       <Grid item>
-        <IconButton onClick={handleConfirmationOpen}>
+        <IconButton onClick={handleConfirmationOpen} aria-label='Remove Friend Icon'>
           <PersonRemoveIcon />
         </IconButton>
         <Confirmation 

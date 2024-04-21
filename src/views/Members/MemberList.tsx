@@ -33,7 +33,7 @@ const Transition = React.forwardRef(function Transition(
 });
 
 const fetchMembers = (setMembers: Function, accessToken: string) => {
-  const query = {query: `{member {id name}}`}
+  const query = {query: `{nonFriendMember {id name}}`}
   fetch('/api/graphql', {
     method: 'POST',
     body: JSON.stringify(query),
@@ -50,7 +50,7 @@ const fetchMembers = (setMembers: Function, accessToken: string) => {
       console.error(json.errors)
       setMembers([])
     } else {
-      setMembers(json.data.member)
+      setMembers(json.data.nonFriendMember)
     }
   })
   .catch((e) => {

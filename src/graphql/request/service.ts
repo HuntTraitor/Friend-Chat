@@ -71,6 +71,25 @@ export class RequestService {
     return rows[0]
   }
 
+  public async delete(memberId: string|undefined, requested: MemberId): Promise<Member> {
+    const deleteQuery = `DELETE FROM member_friend
+    WHERE (member_id = $1
+      AND friend_id = $2)
+    OR (friend_id = $1
+      AND member_id = $2)
+
+    RETURNING $2 AS id,
+    (SELECT data->>'name' FROM member 
+    WHERE id = $2) AS name`
+    
+    const query = {
+      text: deleteQuery,
+      values: [`${memberId}`, `${requested.memberId}`]
+    }
+    const {rows} = await pool.query(query)
+    return rows[0]
+  }
+
   public async isRequested(memberId: string|undefined, requested: MemberId): Promise<boolean> {
     const select = `SELECT * from member_friend WHERE member_id = $1 AND friend_id = $2 AND accepted = false`
     const query = {

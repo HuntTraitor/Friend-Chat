@@ -21,6 +21,8 @@ afterAll((done) => {
   });
 });
 
+let hunterId: string|undefined
+
 test('Anna successfully creates Hunter', async() => {
   const accessToken = await helpers.loginAs(
     supertest(server), helpers.anna
@@ -43,6 +45,7 @@ test('Anna successfully creates Hunter', async() => {
       expect(res.body.data.makeMember).toBeDefined()
       expect(res.body.data.makeMember.id).toBeDefined()
       expect(res.body.data.makeMember.name).toBe('Hunter Member')
+      hunterId = res.body.data.makeMember.id
     })
 })
 
@@ -181,6 +184,7 @@ test('Hunter tries to create a new member', async() => {
     })
 })
 
+let meadowId: string|undefined;
 test('Anna successfully creates Meadow but only returns id', async() => {
   const accessToken = await helpers.loginAs(
     supertest(server), helpers.anna
@@ -203,6 +207,7 @@ test('Anna successfully creates Meadow but only returns id', async() => {
       expect(res.body.data.makeMember).toBeDefined()
       expect(res.body.data.makeMember.id).toBeDefined()
       expect(res.body.data.makeMember.name).not.toBeDefined()
+      meadowId = res.body.data.makeMember.id
     })
 })
 
@@ -268,6 +273,84 @@ test('Anna tries to get all of the members', async() => {
     .post('/api/graphql')
     .set('Authorization', 'Bearer ' + accessToken)
     .send({query: `{member { name }}`})
+    .expect('Content-Type', /json/)
+    .then((res) => {
+      expect(res).toBeDefined()
+      expect(res.body).toBeDefined()
+      expect(res.body.errors).toBeDefined()
+      expect(res.body.errors.length).toEqual(1)
+      expect(res.body.errors[0].message).toBe("Access denied! You don't have permission for this action!")
+    })
+})
+
+test('Hunter gets all of the non friend memebrs', async() => {
+  const accessToken = await helpers.loginAs(
+    supertest(server), helpers.hunter
+  )
+
+  await supertest(server)
+    .post('/api/graphql')
+    .set('Authorization', 'Bearer ' + accessToken)
+    .send({query: `{ nonFriendMember {id name}}`})
+    .expect(200)
+    .then((res) => {
+      console.log(res.body)
+      expect(res).toBeDefined()
+      expect(res.body).toBeDefined()
+      expect(res.body.data.nonFriendMember.length).toEqual(2)
+      expect(res.body.data.nonFriendMember[0].id).toBeDefined()
+      expect(res.body.data.nonFriendMember[0].name).toBe("Meadow Member")
+      expect(res.body.data.nonFriendMember[1].id).toBeDefined()
+      expect(res.body.data.nonFriendMember[1].name).toBe("Tanya Member")
+    })
+})
+
+test('Hunter becomes a friend and then gets all non friend members', async() => {
+  let accessToken = await helpers.loginAs(
+    supertest(server), helpers.hunter
+  )
+
+  await helpers.postRequest(
+    supertest(server),
+    meadowId, accessToken
+  )
+
+  accessToken = await helpers.loginAs(
+    supertest(server), helpers.meadow
+  )
+
+  await helpers.acceptRequest(
+    supertest(server),
+    hunterId, accessToken
+  )
+
+  accessToken = await helpers.loginAs(
+    supertest(server), helpers.hunter
+  )
+
+  await supertest(server)
+    .post('/api/graphql')
+    .set('Authorization', 'Bearer ' + accessToken)
+    .send({query: `{nonFriendMember {id name}}`})
+    .expect(200)
+    .then((res) => {
+      expect(res).toBeDefined()
+      expect(res.body).toBeDefined()
+      expect(res.body.data.nonFriendMember.length).toEqual(1)
+      expect(res.body.data.nonFriendMember[0].id).toBeDefined()
+      expect(res.body.data.nonFriendMember[0].name).toBe("Tanya Member")
+    })
+})
+
+test('Anna tries to get all of the non friend members', async() => {
+  const accessToken = await helpers.loginAs(
+    supertest(server), helpers.anna
+  )
+
+  await supertest(server)
+    .post('/api/graphql')
+    .set('Authorization', 'Bearer ' + accessToken)
+    .send({query: `{nonFriendMember {id name}}`})
     .expect('Content-Type', /json/)
     .then((res) => {
       expect(res).toBeDefined()

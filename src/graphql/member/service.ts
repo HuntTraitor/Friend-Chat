@@ -15,6 +15,24 @@ export class MemberService {
     return rows
   }
 
+  public async getNotFriends(memberId: string|undefined): Promise<Member []> {
+    const select = `SELECT id, data->>'name' AS name FROM member
+    WHERE id <> $1
+    AND id NOT IN (
+      SELECT member_id FROM member_friend WHERE friend_id = $1
+      UNION
+      SELECT friend_id FROM member_friend WHERE member_id = $1
+      UNION
+      SELECT id FROM member WHERE data->>'roles' = '["admin"]'
+    )`
+    const query = {
+      text: select,
+      values: [`${memberId}`]
+    }
+    const {rows} = await pool.query(query)
+    return rows
+  }
+
   public async get(email: string): Promise<Member | undefined> {
     const select = `SELECT id, data #- '{pwhash}' FROM member` +
     ` WHERE data->>'email' = $1`

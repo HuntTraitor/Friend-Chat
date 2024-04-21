@@ -14,6 +14,14 @@ export class MemberResolver {
     return new MemberService().getAll(request.user?.id)
   }
 
+  @Authorized("member")
+  @Query(() => [Member])
+  async nonFriendMember(
+    @Ctx() request: Request
+  ): Promise<Member[]> {
+    return new MemberService().getNotFriends(request.user?.id)
+  }
+
   @Authorized("admin")
   @Mutation(() => Member)
   async makeMember(

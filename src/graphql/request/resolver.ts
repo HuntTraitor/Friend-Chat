@@ -1,4 +1,4 @@
-import {Query, Resolver, Mutation, Arg, Authorized, Ctx} from "type-graphql"
+import {Query, Resolver, Mutation, Arg, Authorized, Ctx, Args} from "type-graphql"
 import type { NextApiRequest } from "next"
 
 import { Member, MemberId } from "../member/schema"
@@ -53,6 +53,15 @@ export class RequestResolver {
 
     return new RequestService().put(request.user?.id, input)
   }
+
+  // @Authorized("member")
+  // @Mutation(() => Member)
+  // async removeRequest(
+  //   @Arg("input") input: MemberId,
+  //   @Ctx() request: Request
+  // ): Promise<Member> {
+
+  // }
 
   @Authorized("member")
   @Query(() => Requests)
