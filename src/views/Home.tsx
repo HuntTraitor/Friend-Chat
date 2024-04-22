@@ -7,7 +7,6 @@ import { NavigationContext, NavigationProvider } from '../context/Navigation'
 import { FriendList } from "./Friends/FriendList"
 import { OpenFriendsContext, OpenFriendsProvider } from '@/context/OpenFriends'
 import { FriendsProvider } from '@/context/Friends'
-import { RequestProvider } from '@/context/Requests'
 import { OpenMembersProvider } from '@/context/OpenMembers'
 import { MemberList } from './Members/MemberList'
 

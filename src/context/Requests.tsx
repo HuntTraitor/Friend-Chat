@@ -23,15 +23,15 @@ export const RequestContext = createContext<RequestContextType>({
   setRequests: () => {}
 });
 
-export const RequestProvider = ({ children }: PropsWithChildren<{}>) => {
-  const [requests, setRequests] = useState<RequestState>({
-    inbound: [],
-    outbound: []
-  });
+// export const RequestProvider = ({ children }: PropsWithChildren<{}>) => {
+//   const [requests, setRequests] = useState<RequestState>({
+//     inbound: [],
+//     outbound: []
+//   });
 
-  return (
-    <RequestContext.Provider value={{ requests, setRequests }}>
-      {children}
-    </RequestContext.Provider>
-  );
-};
+//   return (
+//     <RequestContext.Provider value={{ requests, setRequests }}>
+//       {children}
+//     </RequestContext.Provider>
+//   );
+// };
