@@ -18,12 +18,26 @@ import { Typography } from '@mui/material';
 import { LoginProvider } from '../context/Login';
 import {Login} from './Login';
 import { Home } from './Home';
+import {ThemeProvider, createTheme } from '@mui/material';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#800080',
+    },
+    secondary: {
+      main: '#800080',
+    },
+  },
+});
 
 export function App() {
   return (
-    <LoginProvider>
-        <Login />
-        <Home />
-    </LoginProvider>
+    <ThemeProvider theme={theme}>
+      <LoginProvider>
+          <Login/>
+          <Home />
+      </LoginProvider>
+    </ThemeProvider>
   );
 }

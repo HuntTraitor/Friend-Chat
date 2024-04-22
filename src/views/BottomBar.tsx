@@ -28,7 +28,7 @@ export default function BottomBar({setOpenFriends}: any) {
     <Box sx={{pb: 7}} ref={ref}>
       <CssBaseline />
       <Paper
-        sx={{position: 'fixed',
+        sx={{position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,

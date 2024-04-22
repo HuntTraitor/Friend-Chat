@@ -12,6 +12,7 @@ import Container from '@mui/material/Container';
 import React from 'react'
 import { LoginContext } from '../context/Login';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { inputLabelClasses } from "@mui/material/InputLabel";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -63,8 +64,8 @@ export function Login() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
-            <LockOutlinedIcon />
+          <Avatar sx={{m: 5, backgroundColor: 'purple'}}
+            src="https://media.licdn.com/dms/image/D5603AQEwzccU1co_1A/profile-displayphoto-shrink_200_200/0/1683171781164?e=2147483647&v=beta&t=5B-mtION5BnXnYCwkX3cKfccsTVDGveYJIdfIdccO4E">
           </Avatar>
           <Typography component="h1" variant="h5">
             CSE187 Assignment 3
@@ -93,30 +94,18 @@ export function Login() {
               aria-label="Password"
             />
             <FormControlLabel
-              control={<Checkbox checked={checked} onChange={() => setChecked(!checked)} value="remember" color="primary" aria-label='Remember me checkbox'/>}
+              control={<Checkbox checked={checked} onChange={() => setChecked(!checked)} value="remember" color="primary" aria-label='Remember me checkbox' />}
               label="Remember me"
             />
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{mt: 3, mb: 2}}
+              sx={{mt: 3, mb: 2, backgroundColor: 'purple'}}
               aria-label='Login Button'
             >
               Sign In
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {'Don\'t have an account? Sign Up'}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
       </Container>

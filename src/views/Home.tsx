@@ -3,9 +3,6 @@ import React from 'react'
 import BottomBar from './BottomBar'
 import Topbar from './Topbar'
 import PostPage from './PostPage'
-// import { NavigationContext, NavigationProvider } from '../context/Navigation'
-import { FriendList } from "./Friends/FriendList"
-import { MemberList } from './Members/MemberList'
 import { RefetchProvider } from '@/context/Refetch'
 
 export function Home() {
@@ -23,11 +20,11 @@ export function Home() {
   if (loginContext.accessToken.length > 0) {
     return (
       <div>
-        <RefetchProvider>
-          <Topbar />
+        <Topbar />
+          <RefetchProvider>
             <PostPage openFriends={openFriends} setOpenFriends={setOpenFriends}/>
-          <BottomBar setOpenFriends={setOpenFriends}/>
-        </RefetchProvider>
+          </RefetchProvider>
+        <BottomBar setOpenFriends={setOpenFriends}/>
       </div>
     )
   } else {
