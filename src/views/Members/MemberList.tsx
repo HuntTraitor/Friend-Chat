@@ -14,7 +14,6 @@ import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { NavigationContext } from '@/context/Navigation';
 import { LoginContext } from '@/context/Login';
 import { ListItem } from '@mui/material';
 import { MemberCard } from './MemberCard';
@@ -66,12 +65,6 @@ export function MemberList({openMembers, setOpenMembers}: any) {
     setRefetch(false)
   }, [loginContext.accessToken, refetch])
 
-  // console.log(openMembers)
-
-  // const handleClickOpen = () => {
-  //   setOpenMembers(true);
-  // };
-
   const handleClose = () => {
     setOpenMembers(false);
   };
@@ -84,7 +77,7 @@ export function MemberList({openMembers, setOpenMembers}: any) {
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: 'relative' }}>
+        <AppBar sx={{ position: 'relative' , backgroundColor: 'purple'}}>
           <Toolbar>
             <IconButton
               edge="start"

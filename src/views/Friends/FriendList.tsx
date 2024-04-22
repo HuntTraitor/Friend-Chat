@@ -14,7 +14,6 @@ import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { NavigationContext } from '@/context/Navigation';
 import { LoginContext } from '@/context/Login';
 import FriendCard from './FriendCard';
 import { ListItem } from '@mui/material';
@@ -95,10 +94,6 @@ const fetchReqeusts = (setRequests: Function, accessToken: string) => {
 }
 
 export function FriendList({openFriends, setOpenFriends}: any) {
-
-
-
-  // const {openFriends, setOpenFriends} = React.useContext(OpenFriendsContext)
   const loginContext = React.useContext(LoginContext)
   const [friends, setFriends] = React.useState<Friend[]>([])
   const [openMembers, setOpenMembers] = React.useState(false)
@@ -108,7 +103,6 @@ export function FriendList({openFriends, setOpenFriends}: any) {
   });
 
   const {refetch, setRefetch} = React.useContext(RefetchContext)
-  // const {openMembers, setOpenMembers} = React.useContext(OpenMembersContext)
 
   React.useEffect(() => {
     fetchFriends(setFriends, loginContext.accessToken)
@@ -128,7 +122,7 @@ export function FriendList({openFriends, setOpenFriends}: any) {
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: 'relative' }}>
+        <AppBar sx={{ position: 'relative', backgroundColor: 'purple' }}>
           <Toolbar>
             <IconButton
               edge="start"

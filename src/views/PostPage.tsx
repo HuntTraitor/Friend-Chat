@@ -68,14 +68,20 @@ export default function PostPage({openFriends, setOpenFriends}: any) {
 
     //seperate messageInput to iamge based on regex
 
-    // console.log(messageInput)
-    // const re = /https?:\/\/(?:www\.)?[\w-]+\.[\w./?=&#-]*/g;
-    // const image = messageInput.match(re)
+    const re = /https?:\/\/(?:www\.)?[\w-]+\.[\w./?=&#-]*/g;
+    const image = messageInput.match(re)
+    let replacedContent = undefined;
+    let imageString = ''
+    if (image !== null) {
+      replacedContent = messageInput.replace(image[0], '')
+      imageString = `, image: "${image[0]}"`;
+    }
 
 
 
     const query = {query: `mutation makePost{makePost(input: {
-      content: "${messageInput}"
+      content: "${replacedContent ? replacedContent: messageInput}"
+      ${imageString}
     }) {
       id member {id name} posted content image
     }}`}
@@ -115,8 +121,6 @@ export default function PostPage({openFriends, setOpenFriends}: any) {
   React.useEffect(() => {
     scrollToBottom()
   }, [posts]);
-
-  console.log(error)
 
   return (
     <React.Fragment>

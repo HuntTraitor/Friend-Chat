@@ -1,7 +1,4 @@
 import { Avatar, Grid, IconButton, Typography } from '@mui/material';
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove'; // Assuming you import PersonRemoveIcon properly
-import OutboundIcon from '@mui/icons-material/Outbound';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import * as React from 'react'
 import { LoginContext } from '@/context/Login';
 import { Confirmation } from '../Confirmation';

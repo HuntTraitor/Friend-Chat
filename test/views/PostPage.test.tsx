@@ -48,7 +48,7 @@ const handlers = [
           },
           posted: new Date().toISOString(),
           content: 'Some content',
-          image: 'Some image url',
+          image: 'https://wowepic.jpg',
         },
       },
     })
@@ -131,7 +131,7 @@ it('Creates a new post', async() => {
   )
 
   const input = screen.getByLabelText('message input')
-  await userEvent.type(input, "Some content")
+  await userEvent.type(input, "Some content https://i.pinimg.com/736x/32/7e/db/327edb9a15b304efc264668ada03f725.jpg")
   fireEvent.click(screen.getByLabelText('send post'))
   await waitFor(() => {
     screen.getByText('Some content')
