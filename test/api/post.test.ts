@@ -45,16 +45,20 @@ test('Hunter successfully creates a post', async() => {
     .set('Authorization', 'Bearer ' + accessToken)
     .send({query: `mutation { makePost(
       input: {content: "${helpers.mockPost.content}", image: "${helpers.mockPost.image}"}
-    ) {id posted content image}}`})
+    ) {id member{id name} posted content image}}`})
     .expect(200)
     .then((res) => {
       expect(res.body).toBeDefined()
+      console.log(res.body)
       expect(res.body.data).toBeDefined()
       expect(res.body.data.makePost).toBeDefined()
       expect(res.body.data.makePost.id).toBeDefined()
       expect(res.body.data.makePost.posted).toBeDefined()
       expect(res.body.data.makePost.content).toBe(helpers.mockPost.content)
       expect(res.body.data.makePost.image).toBe(helpers.mockPost.image)
+      expect(res.body.data.makePost.member).toBeDefined()
+      expect(res.body.data.makePost.member.id).toBe(hunterId)
+      expect(res.body.data.makePost.member.name).toBe(helpers.hunter.name)
       hunterPosts.push(res.body.data.makePost.id)
     })
 })
@@ -67,7 +71,7 @@ test('Hunter can view his own posts', async() => {
   await supertest(server)
     .post('/api/graphql')
     .set('Authorization', 'Bearer ' + accessToken)
-    .send({query: `{post(page: 1) {id posted content image}}`})
+    .send({query: `{post(page: 1) {id member {id name} posted content image}}`})
     .expect(200)
     .then((res) => {
       expect(res.body).toBeDefined()
@@ -75,6 +79,9 @@ test('Hunter can view his own posts', async() => {
       expect(res.body.data.post).toBeDefined()
       expect(res.body.data.post.length).toEqual(1)
       expect(res.body.data.post[0].id).toBe(hunterPosts[0])
+      expect(res.body.data.post[0].member).toBeDefined()
+      expect(res.body.data.post[0].member.id).toBe(hunterId)
+      expect(res.body.data.post[0].member.name).toBe(helpers.hunter.name)
     })
 })
 
@@ -102,7 +109,7 @@ test('Tanya can view Hunters posts as a friend', async() => {
   await supertest(server)
     .post('/api/graphql')
     .set('Authorization', 'Bearer ' + accessToken)
-    .send({query: `{post(page: 1) {id posted content image}}`})
+    .send({query: `{post(page: 1) {id member{id name} posted content image}}`})
     .expect(200)
     .then((res) => {
       expect(res.body).toBeDefined()

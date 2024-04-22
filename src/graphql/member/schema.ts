@@ -1,8 +1,8 @@
 import {Field, ObjectType, InputType, ID} from "type-graphql"
-import {Matches} from "class-validator"
+import {Matches, isNotEmpty} from "class-validator"
 
 @ObjectType()
-// @InputType("MemberInput")
+@InputType("MemberInput")
 export class Member {
   @Field(() => ID)
   @Matches(/[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}/)

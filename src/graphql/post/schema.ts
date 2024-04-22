@@ -10,7 +10,7 @@ export class Post {
   @Field(() => GraphQLISODateTime)
     posted!: string
   @Field(() => Member)
-    member!: Member
+    member!: Member //for whatever reason the second part of Member doesnt get covered???????
   @Field()
     content!: string
   @Field({nullable: true})
