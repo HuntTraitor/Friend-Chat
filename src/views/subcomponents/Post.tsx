@@ -4,9 +4,6 @@ import Avatar from '@mui/material/Avatar';
 
 import styles from './Post.module.css'
 
-/**
- * @return {object} JSX
- */
 export function Post({post}: any) {
   return (
     <div>

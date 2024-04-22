@@ -67,13 +67,6 @@ const members = [
   }
 ]
 
-const badMembers = [
-  {
-    "id": "Bad ID",
-    "name": "Bad Member"
-  }
-]
-
 const accessToken = 'some old token'
 const setAccessToken = () => {}
 const userName = ''

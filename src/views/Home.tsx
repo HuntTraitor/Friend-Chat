@@ -13,15 +13,6 @@ import { MemberList } from './Members/MemberList'
 
 export function Home() {
   const loginContext = React.useContext(LoginContext)
-  const  {navigation} = React.useContext(NavigationContext)
-  const [error, setError] = React.useState('Logged out')
-
-  const logout = () => {
-    loginContext.setAccessToken('')
-    setError('Logged out')
-  }
-
-
   React.useEffect(() => {
     const token = localStorage.getItem("accessToken")
     if (token) {
@@ -35,13 +26,7 @@ export function Home() {
         <OpenFriendsProvider>
           <OpenMembersProvider>
             <Topbar />
-              {/* <FriendsProvider> */}
-                {/* <RequestProvider> */}
-                  <PostPage />
-                  {/* <FriendList /> */}
-                  {/* <MemberList /> */}
-                {/* </RequestProvider> */}
-              {/* </FriendsProvider> */}
+              <PostPage />
             <BottomBar />
           </OpenMembersProvider>
         </OpenFriendsProvider>

@@ -391,3 +391,64 @@ test('Anna tries to accept a request', async() => {
     })
 })
 
+test('Tanya deletes her own request', async() => {
+  let accessToken = await helpers.loginAs(
+    supertest(server), helpers.tanya
+  )
+
+  await helpers.postRequest(
+    supertest(server),
+    meadowId, accessToken
+  )
+
+  // accessToken = await helpers.loginAs(
+  //   supertest(server), helpers.tanya
+  // )
+
+  await supertest(server)
+    .post('/api/graphql')
+    .set('Authorization', 'Bearer ' + accessToken)
+    .send({query: `mutation {removeRequest(
+      input: {memberId: "${meadowId}"}
+    ) {id name}}`})
+    .expect(200)
+    .then((res) => {
+      console.log(res.body)
+      expect(res.body).toBeDefined()
+      expect(res.body.data).toBeDefined()
+      expect(res.body.data.removeRequest).toBeDefined()
+      expect(res.body.data.removeRequest.id).toBe(meadowId)
+      expect(res.body.data.removeRequest.name).toBe(helpers.meadow.name)
+    })
+})
+
+test('Tanya deletes meaodws request', async() => {
+  let accessToken = await helpers.loginAs(
+    supertest(server), helpers.tanya
+  )
+
+  await helpers.postRequest(
+    supertest(server),
+    meadowId, accessToken
+  )
+
+  accessToken = await helpers.loginAs(
+    supertest(server), helpers.meadow
+  )
+
+  await supertest(server)
+    .post('/api/graphql')
+    .set('Authorization', 'Bearer ' + accessToken)
+    .send({query: `mutation {removeRequest(
+      input: {memberId: "${tanyaId}"}
+    ) {id name}}`})
+    .expect(200)
+    .then((res) => {
+      console.log(res.body)
+      expect(res.body).toBeDefined()
+      expect(res.body.data).toBeDefined()
+      expect(res.body.data.removeRequest).toBeDefined()
+      expect(res.body.data.removeRequest.id).toBe(tanyaId)
+      expect(res.body.data.removeRequest.name).toBe(helpers.tanya.name)
+    })
+})

@@ -17,7 +17,7 @@ interface Friend {
   name: string;
 }
 
-const fetchPosts = (setPosts: Function, setError: Function, accessToken: string) => {
+const fetchPosts = (setPosts: Function, setError: Function, accessToken: string, loginContext: any) => {
   const query = {query: `query post { post(page: 1 size: 20) {id member {id name} posted content image}}`}
   fetch('/api/graphql', {
     method: 'POST',
@@ -58,15 +58,15 @@ export default function PostPage() {
   };
 
   React.useEffect(() => {
-    fetchPosts(setPosts, setError, loginContext.accessToken);
+    fetchPosts(setPosts, setError, loginContext.accessToken, loginContext);
   }, [loginContext.accessToken, friends])
 
-  React.useEffect(() => {
-    if (error === "Access denied! You don't have permission for this action!") {
-      loginContext.setAccessToken('')
-      localStorage.removeItem('accessToken')
-    }
-  }, [error])
+  // React.useEffect(() => {
+  //   if (error === "Access denied! You don't have permission for this action!") {
+  //     loginContext.setAccessToken('')
+  //     localStorage.removeItem('accessToken')
+  //   }
+  // }, [error])
 
   const onSubmit = (event: any) => {
     event.preventDefault();
@@ -89,7 +89,10 @@ export default function PostPage() {
       })
       .then((json) => {
         if (json.errors) {
-          console.log(json.errors)
+          if(json.errors[0].message === "Access denied! You don't have permission for this action!") {
+            loginContext.setAccessToken('')
+            localStorage.removeItem('accessToken')
+          }
           setError(`${json.errors[0].message}`)
         } else {
           setError('')
@@ -108,6 +111,8 @@ export default function PostPage() {
   React.useEffect(() => {
     scrollToBottom()
   }, [posts]);
+
+  console.log(error)
 
   return (
     <React.Fragment>
@@ -154,7 +159,7 @@ export default function PostPage() {
           aria-label="send"
           type="submit"
           >
-          <SendIcon />
+          <SendIcon aria-label="send post"/>
         </IconButton>
       </Toolbar>
     </AppBar>

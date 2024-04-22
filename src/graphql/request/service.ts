@@ -86,6 +86,7 @@ export class RequestService {
       text: deleteQuery,
       values: [`${memberId}`, `${requested.memberId}`]
     }
+
     const {rows} = await pool.query(query)
     return rows[0]
   }

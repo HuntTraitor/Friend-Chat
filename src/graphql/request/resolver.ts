@@ -54,14 +54,20 @@ export class RequestResolver {
     return new RequestService().put(request.user?.id, input)
   }
 
-  // @Authorized("member")
-  // @Mutation(() => Member)
-  // async removeRequest(
-  //   @Arg("input") input: MemberId,
-  //   @Ctx() request: Request
-  // ): Promise<Member> {
-
-  // }
+  @Authorized("member")
+  @Mutation(() => Member)
+  async removeRequest(
+    @Arg("input") input: MemberId,
+    @Ctx() request: NextApiRequest
+  ): Promise<Member> {
+    if (!await new MemberService().userExists(input)) {
+      throw new GraphQLError("Member does not exist")
+    }
+    // if (!await new RequestService().isAcceptable(request.user?.id, input)) {
+    //   throw new GraphQLError("Member did not send a Request")
+    // }
+    return new RequestService().delete(request.user?.id, input)
+  }
 
   @Authorized("member")
   @Query(() => Requests)
