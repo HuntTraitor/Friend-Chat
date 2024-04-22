@@ -13,8 +13,6 @@
  * Feel free to change this as much as you like, but don't add a default export
  */
 
-import { Fragment } from 'react';
-import { Typography } from '@mui/material';
 import { LoginProvider } from '../context/Login';
 import {Login} from './Login';
 import { Home } from './Home';
@@ -28,6 +26,11 @@ const theme = createTheme({
     secondary: {
       main: '#800080',
     },
+  },
+  typography: {
+    fontFamily: [
+      '-apple-system',
+    ].join(','),
   },
 });
 
