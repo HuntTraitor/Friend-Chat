@@ -15,27 +15,12 @@ import { TransitionProps } from '@mui/material/transitions';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { NavigationContext } from '@/context/Navigation';
-import { OpenFriendsContext } from '@/context/OpenFriends';
 import { LoginContext } from '@/context/Login';
 import FriendCard from './FriendCard';
 import { ListItem } from '@mui/material';
 import {RequestCard} from './RequestCard';
-import { FriendsContext, FriendsProvider } from '@/context/Friends';
-import { RequestContext } from '@/context/Requests';
-import { OpenMembersContext } from '@/context/OpenMembers';
-import { MembersProvider } from '@/context/Members';
 import { MemberList } from '../Members/MemberList';
-
-interface FriendRequest {
-  inbound: Array<{
-    id: string;
-    name: string;
-  }>;
-  outbound: Array<{
-    id: string;
-    name: string;
-  }>; 
-}
+import { RefetchContext } from '@/context/Refetch';
 
 interface Friend {
   id: string;
@@ -109,24 +94,27 @@ const fetchReqeusts = (setRequests: Function, accessToken: string) => {
   })
 }
 
-export function FriendList() {
-  const {openFriends, setOpenFriends} = React.useContext(OpenFriendsContext)
+export function FriendList({openFriends, setOpenFriends}: any) {
+
+
+
+  // const {openFriends, setOpenFriends} = React.useContext(OpenFriendsContext)
   const loginContext = React.useContext(LoginContext)
-  const {friends, setFriends} = React.useContext(FriendsContext)
+  const [friends, setFriends] = React.useState<Friend[]>([])
+  const [openMembers, setOpenMembers] = React.useState(false)
   const [requests, setRequests] = React.useState<RequestState>({
     inbound: [],
     outbound: []
   });
-  const {openMembers, setOpenMembers} = React.useContext(OpenMembersContext)
+
+  const {refetch, setRefetch} = React.useContext(RefetchContext)
+  // const {openMembers, setOpenMembers} = React.useContext(OpenMembersContext)
 
   React.useEffect(() => {
     fetchFriends(setFriends, loginContext.accessToken)
     fetchReqeusts(setRequests, loginContext.accessToken)
-  }, [loginContext.accessToken])
-
-  // const handleClickOpen = () => {
-  //   setOpenFriends(true);
-  // };
+    setRefetch(false)
+  }, [loginContext.accessToken, refetch])
 
   const handleClose = () => {
     setOpenFriends(false);
@@ -158,34 +146,30 @@ export function FriendList() {
             </Button>
           </Toolbar>
         </AppBar>
-        <RequestContext.Provider value={{requests, setRequests}}>
-          <MembersProvider>
-            <List>
-              {friends && 
-                friends.map((friend: any) => (
-                  <ListItem key={friend.id}>
-                    <FriendCard friend={friend}/>
-                  </ListItem>
-                ))}
-            </List>
-            <Divider />
-            <List>
+          <List>
+            {friends && 
+              friends.map((friend: any) => (
+                <ListItem key={friend.id}>
+                  <FriendCard friend={friend}/>
+                </ListItem>
+              ))}
+          </List>
+          <Divider />
+          <List>
+            {requests &&
+              requests.outbound?.map((request: any) => (
+                <ListItem key={request.id}>
+                  <RequestCard friend={request} bound={"outbound"}/>
+                </ListItem>
+              ))}
               {requests &&
-                requests.outbound?.map((request: any) => (
-                  <ListItem key={request.id}>
-                    <RequestCard friend={request} bound={"outbound"}/>
-                  </ListItem>
-                ))}
-                {requests &&
-                  requests.inbound?.map((request: any) => (
-                  <ListItem key={request.id}>
-                    <RequestCard friend={request} bound={"inbound"}/>
-                  </ListItem>
-                ))}
-            </List>
-            <MemberList />
-          </MembersProvider>
-        </RequestContext.Provider>
+                requests.inbound?.map((request: any) => (
+                <ListItem key={request.id}>
+                  <RequestCard friend={request} bound={"inbound"}/>
+                </ListItem>
+              ))}
+          </List>
+          <MemberList openMembers={openMembers} setOpenMembers={setOpenMembers}/>
       </Dialog>
     </React.Fragment>
   );

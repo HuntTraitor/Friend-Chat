@@ -3,17 +3,35 @@ import {pool} from '../db'
 
 export class PostService {
   public async create(Post: NewPost, userId: string|undefined): Promise<Post> {
-    const insert = `INSERT INTO post(member_id, data) VALUES($1, 
-      jsonb_build_object('posted', current_timestamp, 'content', $2::text, 'image', $3::text)) 
-      RETURNING id, 
-      (SELECT jsonb_build_object('id', member.id, 'name', member.data->>'name')
-        FROM member WHERE member.id = $1) AS member,
-      data->>'posted' AS posted, 
-      data->>'content' AS content,
-      data->>'image' AS image`
+
+    let insert: string
+
+    if (Post.image === undefined) {
+      insert = `INSERT INTO post(member_id, data) VALUES($1, 
+        jsonb_build_object('posted', current_timestamp, 'content', $2::text)) 
+        RETURNING id, 
+        (SELECT jsonb_build_object('id', member.id, 'name', member.data->>'name')
+          FROM member WHERE member.id = $1) AS member,
+        data->>'posted' AS posted, 
+        data->>'content' AS content`
+    } else {
+      insert = `INSERT INTO post(member_id, data) VALUES($1, 
+        jsonb_build_object('posted', current_timestamp, 'content', $2::text, 'image', $3::text)) 
+        RETURNING id, 
+        (SELECT jsonb_build_object('id', member.id, 'name', member.data->>'name')
+          FROM member WHERE member.id = $1) AS member,
+        data->>'posted' AS posted, 
+        data->>'content' AS content,
+        data->>'image' AS image`
+    }
+
+    const values = [`${userId}`, `${Post.content}`]
     const query = {
       text: insert,
-      values: [`${userId}`, `${Post.content}`, `${Post.image}`]
+      values: values
+    }
+    if (Post.image) {
+      values.push(`${Post.image}`)
     }
     const {rows} = await pool.query(query)
     rows[0].posted = new Date(rows[0].posted)

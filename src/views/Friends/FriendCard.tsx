@@ -2,11 +2,10 @@ import { Avatar, Grid, IconButton, Typography } from '@mui/material';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'; // Assuming you import PersonRemoveIcon properly
 import {Confirmation} from '../Confirmation'
 import * as React from 'react'
-import { FriendsContext } from '@/context/Friends';
 import { LoginContext } from '@/context/Login';
-import { MembersContext } from '@/context/Members';
+import { RefetchContext } from '@/context/Refetch';
 
-const removeFriend = (friend: any, setFriends: Function, friends: any, membersContext: any, accessToken: string) => {
+const removeFriend = (friend: any, setRefetch: Function, accessToken: string) => {
   const query = {query: `mutation removeFriend{removeFriend(input: {
     memberId: "${friend.id}"
   }) {
@@ -28,8 +27,7 @@ const removeFriend = (friend: any, setFriends: Function, friends: any, membersCo
       if (json.errors) {
         console.error(json.errors)
       } else {
-        setFriends(friends.filter((deletedFriend: any) => deletedFriend.id !== friend.id))
-        membersContext.setMembers([...membersContext.members, friend])
+        setRefetch(true)
       }
     })
     .catch((e) => {
@@ -40,8 +38,7 @@ const removeFriend = (friend: any, setFriends: Function, friends: any, membersCo
 export default function FriendCard({friend}: any) {
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
   const loginContext = React.useContext(LoginContext)
-  const {friends, setFriends} = React.useContext(FriendsContext)
-  const membersContext = React.useContext(MembersContext)
+  const {refetch, setRefetch} = React.useContext(RefetchContext)
 
 
   const handleConfirmationOpen = () => {
@@ -70,7 +67,7 @@ export default function FriendCard({friend}: any) {
           setOpen={setOpenConfirmation}
           title={`Are you sure you want to remove ${friend.name} as a friend?`}
           content={"This will prevent you from seeing their posts"}
-          trigger={() => removeFriend(friend, setFriends, friends, membersContext, loginContext.accessToken)}
+          trigger={() => removeFriend(friend, setRefetch, loginContext.accessToken)}
         />
       </Grid>
     </Grid>

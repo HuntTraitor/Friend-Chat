@@ -1,6 +1,5 @@
 import { render, screen,  waitFor, fireEvent } from '@testing-library/react'
 import { LoginContext } from '@/context/Login';
-import { OpenFriendsContext } from '@/context/OpenFriends';
 import BottomBar from '@/views/BottomBar';
 
 let accessToken = 'some old token'
@@ -13,7 +12,7 @@ const setOpenFriends = () => {openFriends = true}
 it('Renders successfully',  async() => {
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <BottomBar />
+      <BottomBar openFriends={openFriends} setOpenFriends={setOpenFriends}/>
     </LoginContext.Provider>
   )
   screen.getByLabelText('Home')
@@ -24,9 +23,7 @@ it('Renders successfully',  async() => {
 it('Clicks friends tab', async() => {
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <OpenFriendsContext.Provider value={{openFriends, setOpenFriends}}>
-        <BottomBar />
-      </OpenFriendsContext.Provider>
+      <BottomBar openFriends={openFriends} setOpenFriends={setOpenFriends}/>
     </LoginContext.Provider>
   )
 
@@ -39,7 +36,7 @@ it('Clicks friends tab', async() => {
 it('Clicks Logout', async() => {
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <BottomBar />
+      <BottomBar openFriends={openFriends} setOpenFriends={setOpenFriends}/>
     </LoginContext.Provider>
   )
 

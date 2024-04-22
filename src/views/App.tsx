@@ -16,17 +16,14 @@
 import { Fragment } from 'react';
 import { Typography } from '@mui/material';
 import { LoginProvider } from '../context/Login';
-import { NavigationProvider } from '../context/Navigation';
 import {Login} from './Login';
 import { Home } from './Home';
 
 export function App() {
   return (
     <LoginProvider>
-      <NavigationProvider>
         <Login />
         <Home />
-      </NavigationProvider>
     </LoginProvider>
   );
 }

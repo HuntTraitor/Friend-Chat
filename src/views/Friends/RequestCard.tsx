@@ -4,14 +4,12 @@ import OutboundIcon from '@mui/icons-material/Outbound';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import * as React from 'react'
 import { LoginContext } from '@/context/Login';
-import { FriendsContext } from '@/context/Friends';
 import { Confirmation } from '../Confirmation';
-import { RequestContext } from '@/context/Requests';
-import { MembersContext } from '@/context/Members';
+import { RefetchContext } from '@/context/Refetch';
 
-const acceptFriend = (friend: any, setFriends: Function, friends: any, requestContext: any, accessToken: string) => {
-  const requests = requestContext.requests
-  const setRequests = requestContext.setRequests
+const acceptFriend = (friend: any, setRefetch: Function, accessToken: string) => {
+  // const requests = requestContext.requests
+  // const setRequests = requestContext.setRequests
   const query = {query: `mutation accpetRequest{acceptRequest(input: {
     memberId: "${friend.id}"
   }) {
@@ -33,11 +31,11 @@ const acceptFriend = (friend: any, setFriends: Function, friends: any, requestCo
     if (json.errors) {
       console.error(json.errors)
     } else {
-      setFriends([...friends, friend])
-      setRequests({
-        inbound: requests.inbound.filter((request: any) => request.id !== friend.id),
-        outbound: requests.outbound
-      })
+      // setRequests({
+      //   inbound: requests.inbound.filter((request: any) => request.id !== friend.id),
+      //   outbound: requests.outbound
+      // })
+      setRefetch(true)
     }
   })
   .catch((e) => {
@@ -45,9 +43,7 @@ const acceptFriend = (friend: any, setFriends: Function, friends: any, requestCo
   })
 }
 
-const removeRequest = (request: any, requestContext: any, membersContext: any, accessToken: string) => {
-  const requests = requestContext.requests
-  const setRequests = requestContext.setRequests
+const removeRequest = (request: any, setRefetch: Function, accessToken: string) => {
   const query = {query: `mutation removeRequest{removeRequest(input: {
     memberId: "${request.id}"
   }) {
@@ -69,12 +65,7 @@ const removeRequest = (request: any, requestContext: any, membersContext: any, a
     if (json.errors) {
       console.error(json.errors)
     } else {
-      console.log(json)
-      setRequests({
-        inbound: requests.inbound.filter((requestHere: any) => request.id !== requestHere.id),
-        outbound: requests.outbound.filter((requestHere: any) => request.id !== requestHere.id),
-      })
-      membersContext.setMembers([...membersContext.members, request])
+      setRefetch(true)
     }
   })
   .catch((e) => {
@@ -85,13 +76,9 @@ const removeRequest = (request: any, requestContext: any, membersContext: any, a
 export function RequestCard({friend, bound}: any) {
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
   const loginContext = React.useContext(LoginContext)
-  const {friends, setFriends} = React.useContext(FriendsContext)
-  const requestContext = React.useContext(RequestContext)
-  const membersContext = React.useContext(MembersContext)
+  const {refetch, setRefetch} = React.useContext(RefetchContext)
 
   const [alternateConfirmation, setAlternateConfirmation] = React.useState(false)
-
-  console.log(requestContext.requests)
 
 
   const handleConfirmationOpen = () => {
@@ -123,14 +110,14 @@ export function RequestCard({friend, bound}: any) {
           setOpen={setAlternateConfirmation}
           title={`Are you sure you want to remove ${friend.name}'s request`}
           content={"This will take you off of their request list"}
-          trigger={() => removeRequest(friend, requestContext, membersContext, loginContext.accessToken)}
+          trigger={() => removeRequest(friend, setRefetch, loginContext.accessToken)}
         />
         <Confirmation 
           open={openConfirmation}
           setOpen={setOpenConfirmation}
           title={`Are you sure you want to accept ${friend.name} as a friend?`}
           content={"This will allow you to see all of their posts"}
-          trigger={() => acceptFriend(friend, setFriends, friends, requestContext, loginContext.accessToken)}
+          trigger={() => acceptFriend(friend, setRefetch, loginContext.accessToken)}
         />
       </Grid>
     </Grid>

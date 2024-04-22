@@ -6,11 +6,7 @@ import { setupServer } from 'msw/node';
 
 import  {MemberList}  from '../../src/views/Members/MemberList'
 import { LoginContext } from '@/context/Login';
-import { FriendsContext, FriendsProvider } from '@/context/Friends';
-import { RequestContext } from '@/context/Requests';
-import { OpenFriendsContext, OpenFriendsProvider } from '@/context/OpenFriends';
 import { FriendList } from '@/views/Friends/FriendList';
-import { OpenMembersContext, OpenMembersProvider } from '@/context/OpenMembers';
 import PostPage from '@/views/PostPage';
 
 let returnError = false

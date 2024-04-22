@@ -9,8 +9,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SendIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
-import { FriendsContext } from '@/context/Friends';
 import { FriendList } from './Friends/FriendList';
+import { RefetchContext } from '@/context/Refetch';
 
 interface Friend {
   id: string;
@@ -45,12 +45,13 @@ const fetchPosts = (setPosts: Function, setError: Function, accessToken: string,
     })
 }
 
-export default function PostPage() {
+export default function PostPage({openFriends, setOpenFriends}: any) {
   const loginContext = React.useContext(LoginContext)
   const [posts, setPosts] = React.useState<any[]>([])
   const [error, setError] = React.useState('Logged out')
-  const [friends, setFriends] = React.useState<Friend[]>([])
-  // const {friends, setFriends} = React.useContext(FriendsContext)
+  const {refetch, setRefetch} = React.useContext(RefetchContext)
+
+  // const [openFriends, setOpenFriends] = React.useState(false)
 
   const [messageInput, setMessageInput] = React.useState('');
   const handleInputChange = (event: any) => {
@@ -59,17 +60,20 @@ export default function PostPage() {
 
   React.useEffect(() => {
     fetchPosts(setPosts, setError, loginContext.accessToken, loginContext);
-  }, [loginContext.accessToken, friends])
-
-  // React.useEffect(() => {
-  //   if (error === "Access denied! You don't have permission for this action!") {
-  //     loginContext.setAccessToken('')
-  //     localStorage.removeItem('accessToken')
-  //   }
-  // }, [error])
+    setRefetch(false)
+  }, [loginContext.accessToken, refetch])
 
   const onSubmit = (event: any) => {
     event.preventDefault();
+
+    //seperate messageInput to iamge based on regex
+
+    // console.log(messageInput)
+    // const re = /https?:\/\/(?:www\.)?[\w-]+\.[\w./?=&#-]*/g;
+    // const image = messageInput.match(re)
+
+
+
     const query = {query: `mutation makePost{makePost(input: {
       content: "${messageInput}"
     }) {
@@ -163,9 +167,7 @@ export default function PostPage() {
         </IconButton>
       </Toolbar>
     </AppBar>
-    <FriendsContext.Provider value={{friends, setFriends}}>
-      <FriendList />
-    </FriendsContext.Provider>
+    <FriendList openFriends={openFriends} setOpenFriends={setOpenFriends}/>
   </React.Fragment>
   );
 }

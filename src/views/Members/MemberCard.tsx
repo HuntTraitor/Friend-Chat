@@ -4,14 +4,11 @@ import OutboundIcon from '@mui/icons-material/Outbound';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import * as React from 'react'
 import { LoginContext } from '@/context/Login';
-import { FriendsContext } from '@/context/Friends';
 import { Confirmation } from '../Confirmation';
-import { RequestContext } from '@/context/Requests';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { RefetchContext } from '@/context/Refetch';
 
-const sendRequest = (friend: any, requestsContext: any, members: any, setMembers: Function, accessToken: string) => {
-  const requests = requestsContext.requests
-  const setRequests = requestsContext.setRequests
+const sendRequest = (friend: any, setRefetch: Function, accessToken: string) => {
   const query = {query: `mutation makeRequest{makeRequest(input: {
     memberId: "${friend.id}"
   }) {
@@ -33,11 +30,7 @@ const sendRequest = (friend: any, requestsContext: any, members: any, setMembers
     if (json.errors) {
       console.error(json.errors)
     } else {
-      setMembers(members.filter((deletedMember: any) => deletedMember.id !== friend.id))
-      setRequests({
-        inbound: requests.inbound,
-        outbound: [...requests.outbound, json.data.makeRequest]
-      })
+      setRefetch(true)
     }
   })
   .catch((e) => {
@@ -46,18 +39,15 @@ const sendRequest = (friend: any, requestsContext: any, members: any, setMembers
   })
 }
 
-export function MemberCard({member, members, setMembers}: any) {
+export function MemberCard({member}: any) {
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
   const loginContext = React.useContext(LoginContext)
-  const requestContext = React.useContext(RequestContext)
+  const {refetch, setRefetch} = React.useContext(RefetchContext)
 
   const handleConfirmationOpen = () => {
     setOpenConfirmation(true);
   };
 
-  // const handleConfirmationClose = () => {
-  //   setOpenConfirmation(false);
-  // };
   return (
     <Grid container alignItems="center" spacing={2}>
       <Grid item>
@@ -77,7 +67,7 @@ export function MemberCard({member, members, setMembers}: any) {
           setOpen={setOpenConfirmation}
           title={`Are you sure you want to add ${member.name} as a friend?`}
           content={"This will notify them that you would like to be friends"}
-          trigger={() => sendRequest(member, requestContext, members, setMembers, loginContext.accessToken)}
+          trigger={() => sendRequest(member, setRefetch, loginContext.accessToken)}
         />
       </Grid>
     </Grid>

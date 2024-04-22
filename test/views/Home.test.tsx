@@ -1,6 +1,5 @@
 import { render, screen,  waitFor, fireEvent } from '@testing-library/react'
 import { LoginContext } from '@/context/Login';
-import { OpenFriendsContext } from '@/context/OpenFriends';
 import BottomBar from '@/views/BottomBar';
 import { Home } from '@/views/Home';
 

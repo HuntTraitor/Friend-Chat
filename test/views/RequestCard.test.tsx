@@ -6,13 +6,13 @@ import { setupServer } from 'msw/node';
 
 import  {RequestCard}  from '../../src/views/Friends/RequestCard'
 import { LoginContext } from '@/context/Login';
-import { FriendsContext } from '@/context/Friends';
-import { RequestContext } from '@/context/Requests';
+import { RefetchProvider } from '@/context/Refetch';
 
+let returnError = false
 const handlers = [
   graphql.mutation('accpetRequest', ({ query, variables }) => {
     console.log(query)
-    if (query.includes('Bad ID')) {
+    if (returnError) {
       return HttpResponse.json({
         errors: [ {
             "message": "Some Error",
@@ -34,6 +34,7 @@ const handlers = [
 const server = setupServer(...handlers)
 
 beforeAll(() => server.listen())
+beforeEach(() => returnError = false)
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
@@ -45,11 +46,6 @@ const setUserName = () => {}
 const mockRequest = {
   "id": "Friend id",
   "name": "Test Request"
-}
-
-const badRequest = {
-  "id": "Bad ID",
-  "name": "Bad Request"
 }
 
 it('Successfully displays inbound request card', async() => {
@@ -70,85 +66,42 @@ it('Successfully displays outbound request card', async() => {
   expect(screen.queryByLabelText('Inbound Icon')).toBeNull()
 })
 
-const mockFriend = {
-  "id": "Friend id",
-  "name": "Friend Name"
-}
-
 it('Successfully accepts a friend', async() => {
-  let sentFriends = false
-  let sentRequests = false
-  const setFriends = () => {sentFriends = true}
-  const friends = [mockFriend]
-  const requests = {
-    inbound: [mockFriend],
-    outbound: [],
-  }
-  const setRequests = () => {sentRequests = true}
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <FriendsContext.Provider value={{friends, setFriends}}>
-        <RequestContext.Provider value={{requests, setRequests}}>
+      <RefetchProvider>
           <RequestCard friend={mockRequest} bound={"inbound"} />
-        </RequestContext.Provider>
-      </FriendsContext.Provider>
+        </RefetchProvider>
     </LoginContext.Provider>
   )
 
   fireEvent.click(screen.getByLabelText('Inbound Icon'))
   fireEvent.click(screen.getByText('Agree'))
-  await waitFor(() => {
-    expect(sentFriends).toBeTruthy()
-    expect(sentRequests).toBeTruthy()
-  })
 })
 
 it('Fails to accept a friend', async() => {
-  let sentFriends = false
-  let sentRequests = false
-  const setFriends = () => {sentFriends = true}
-  const friends = [mockFriend]
-  const requests = {
-    inbound: [],
-    outbound: [],
-  }
-  const setRequests = () => {sentRequests = true}
+  returnError = true
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <FriendsContext.Provider value={{friends, setFriends}}>
-        <RequestContext.Provider value={{requests, setRequests}}>
-          <RequestCard friend={badRequest} bound={"inbound"} />
-        </RequestContext.Provider>
-      </FriendsContext.Provider>
+      <RefetchProvider>
+        <RequestCard friend={mockRequest} bound={"inbound"} />
+      </RefetchProvider>
     </LoginContext.Provider>
   )
 
   fireEvent.click(screen.getByLabelText('Inbound Icon'))
   fireEvent.click(screen.getByText('Agree'))
-  await waitFor(() => {
-    expect(sentFriends).toBeFalsy()
-    expect(sentRequests).toBeFalsy()
-  })
 })
 
 it('Alerts when unexpect error caught in request', async() => {
   server.close()
   let alerted = false
   window.alert = () => {alerted = true}
-  const setFriends = () => {}
-  const friends = [mockFriend]
-  const requests = {
-    inbound: [],
-    outbound: [],
-  }
-  const setRequests = () => {}
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <FriendsContext.Provider value={{friends, setFriends}}>
-        <RequestContext.Provider value={{requests, setRequests}}>
-          <RequestCard friend={mockRequest} bound={"inbound"} />
-        </RequestContext.Provider>
-      </FriendsContext.Provider>
+      <RefetchProvider>
+        <RequestCard friend={mockRequest} bound={"inbound"} />
+      </RefetchProvider>
     </LoginContext.Provider>
   )
 

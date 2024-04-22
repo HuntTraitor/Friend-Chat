@@ -432,7 +432,7 @@ test('Posting with no image still works', async() => {
       expect(res.body.data.makePost.id).toBeDefined()
       expect(res.body.data.makePost.posted).toBeDefined()
       expect(res.body.data.makePost.content).toBe(helpers.mockPost.content)
-      expect(res.body.data.makePost.image).toBe("undefined")
+      expect(res.body.data.makePost.image).toBeNull()
       hunterPosts.push(res.body.data.makePost.id)
     })
 })

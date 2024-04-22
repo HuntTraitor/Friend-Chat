@@ -7,20 +7,16 @@ import Paper from '@mui/material/Paper';
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import {NavigationContext} from '../context/Navigation';
 import { LoginContext } from '@/context/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PeopleIcon from '@mui/icons-material/People';
-import { OpenFriendsContext } from '@/context/OpenFriends';
 
 /**
  *
  * @return {object} JSX
  */
-export default function BottomBar() {
+export default function BottomBar({setOpenFriends}: any) {
   const loginContext = React.useContext(LoginContext)
-  const {navigation, setNavigation} = React.useContext(NavigationContext);
-  const {openFriends, setOpenFriends} = React.useContext(OpenFriendsContext)
   const ref = React.useRef(null);
 
   const logout = () => {
@@ -41,9 +37,6 @@ export default function BottomBar() {
         <BottomNavigation
           showLabels
           value={0}
-          onChange={(event, newValue) => {
-            setNavigation(newValue);
-          }}
           sx={{
             '& .Mui-selected': {
               color: 'purple', // Color for the selected label
@@ -56,7 +49,6 @@ export default function BottomBar() {
           <BottomNavigationAction
             aria-label="Home"
             icon={<HomeIcon />}
-            disabled={navigation === 0}
           />
           <BottomNavigationAction
             aria-label="Friends"

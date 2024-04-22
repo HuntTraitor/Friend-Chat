@@ -15,14 +15,10 @@ import { TransitionProps } from '@mui/material/transitions';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { NavigationContext } from '@/context/Navigation';
-import { OpenFriendsContext } from '@/context/OpenFriends';
 import { LoginContext } from '@/context/Login';
 import { ListItem } from '@mui/material';
-import { FriendsContext, FriendsProvider } from '@/context/Friends';
-import { RequestContext } from '@/context/Requests';
-import { OpenMembersContext } from '@/context/OpenMembers';
 import { MemberCard } from './MemberCard';
-import { MembersContext } from '@/context/Members';
+import { RefetchContext } from '@/context/Refetch';
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -60,15 +56,15 @@ const fetchMembers = (setMembers: Function, accessToken: string) => {
   })
 }
 
-export function MemberList() {
-  const {openMembers, setOpenMembers} = React.useContext(OpenMembersContext)
-  const {members, setMembers} = React.useContext(MembersContext)
-  // const [members, setMembers] = React.useState([])
+export function MemberList({openMembers, setOpenMembers}: any) {
+  const [members, setMembers] = React.useState([])
+  const {refetch, setRefetch} = React.useContext(RefetchContext)
   const loginContext = React.useContext(LoginContext)
 
   React.useEffect(() => {
     fetchMembers(setMembers, loginContext.accessToken)
-  }, [loginContext.accessToken])
+    setRefetch(false)
+  }, [loginContext.accessToken, refetch])
 
   // console.log(openMembers)
 
