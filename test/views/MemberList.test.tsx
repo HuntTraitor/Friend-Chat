@@ -8,6 +8,7 @@ import  {MemberList}  from '../../src/views/Members/MemberList'
 import { LoginContext } from '@/context/Login';
 import { FriendsContext } from '@/context/Friends';
 import { OpenMembersContext } from '@/context/OpenMembers';
+import { MembersProvider } from '@/context/Members';
 
 let returnError = false
 
@@ -78,7 +79,9 @@ it('Renders correct member list', async() => {
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
       <OpenMembersContext.Provider value={{openMembers, setOpenMembers}}>
-        <MemberList />
+        <MembersProvider>
+          <MemberList />
+        </MembersProvider>
       </OpenMembersContext.Provider>
     </LoginContext.Provider>
   )
@@ -94,7 +97,9 @@ it('Fails to render a member list', async() => {
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
       <OpenMembersContext.Provider value={{openMembers, setOpenMembers}}>
-        <MemberList />
+        <MembersProvider>
+          <MemberList />
+        </MembersProvider>
       </OpenMembersContext.Provider>
     </LoginContext.Provider>
   )
@@ -108,7 +113,9 @@ it('Removes member from list on successful add', async() => {
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
       <OpenMembersContext.Provider value={{openMembers, setOpenMembers}}>
-        <MemberList />
+        <MembersProvider>
+            <MemberList />
+        </MembersProvider>
       </OpenMembersContext.Provider>
     </LoginContext.Provider>
   )
@@ -129,7 +136,9 @@ it('Goes back on the back button click', async() => {
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
       <OpenMembersContext.Provider value={{openMembers, setOpenMembers}}>
-        <MemberList />
+        <MembersProvider>
+          <MemberList />
+        </MembersProvider>
       </OpenMembersContext.Provider>
     </LoginContext.Provider>
   )
@@ -150,7 +159,9 @@ it('Alerts when server is down', async() => {
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
       <OpenMembersContext.Provider value={{openMembers, setOpenMembers}}>
-        <MemberList />
+        <MembersProvider>
+          <MemberList />
+        </MembersProvider>
       </OpenMembersContext.Provider>
     </LoginContext.Provider>
   )

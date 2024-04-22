@@ -22,6 +22,7 @@ import { FriendsContext, FriendsProvider } from '@/context/Friends';
 import { RequestContext } from '@/context/Requests';
 import { OpenMembersContext } from '@/context/OpenMembers';
 import { MemberCard } from './MemberCard';
+import { MembersContext } from '@/context/Members';
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -61,7 +62,8 @@ const fetchMembers = (setMembers: Function, accessToken: string) => {
 
 export function MemberList() {
   const {openMembers, setOpenMembers} = React.useContext(OpenMembersContext)
-  const [members, setMembers] = React.useState([])
+  const {members, setMembers} = React.useContext(MembersContext)
+  // const [members, setMembers] = React.useState([])
   const loginContext = React.useContext(LoginContext)
 
   React.useEffect(() => {

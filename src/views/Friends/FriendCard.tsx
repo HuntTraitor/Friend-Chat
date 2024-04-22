@@ -4,8 +4,9 @@ import {Confirmation} from '../Confirmation'
 import * as React from 'react'
 import { FriendsContext } from '@/context/Friends';
 import { LoginContext } from '@/context/Login';
+import { MembersContext } from '@/context/Members';
 
-const removeFriend = (friend: any, setFriends: Function, friends: any, accessToken: string) => {
+const removeFriend = (friend: any, setFriends: Function, friends: any, membersContext: any, accessToken: string) => {
   const query = {query: `mutation removeFriend{removeFriend(input: {
     memberId: "${friend.id}"
   }) {
@@ -28,6 +29,7 @@ const removeFriend = (friend: any, setFriends: Function, friends: any, accessTok
         console.error(json.errors)
       } else {
         setFriends(friends.filter((deletedFriend: any) => deletedFriend.id !== friend.id))
+        membersContext.setMembers([...membersContext.members, friend])
       }
     })
     .catch((e) => {
@@ -39,6 +41,7 @@ export default function FriendCard({friend}: any) {
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
   const loginContext = React.useContext(LoginContext)
   const {friends, setFriends} = React.useContext(FriendsContext)
+  const membersContext = React.useContext(MembersContext)
 
 
   const handleConfirmationOpen = () => {
@@ -67,7 +70,7 @@ export default function FriendCard({friend}: any) {
           setOpen={setOpenConfirmation}
           title={`Are you sure you want to remove ${friend.name} as a friend?`}
           content={"This will prevent you from seeing their posts"}
-          trigger={() => removeFriend(friend, setFriends, friends, loginContext.accessToken)}
+          trigger={() => removeFriend(friend, setFriends, friends, membersContext, loginContext.accessToken)}
         />
       </Grid>
     </Grid>

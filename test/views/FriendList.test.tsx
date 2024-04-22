@@ -11,6 +11,7 @@ import { RequestContext } from '@/context/Requests';
 import { OpenFriendsContext } from '@/context/OpenFriends';
 import { FriendList } from '@/views/Friends/FriendList';
 import { OpenMembersContext, OpenMembersProvider } from '@/context/OpenMembers';
+import { sync } from 'glob';
 
 let returnError = false
 
@@ -120,6 +121,25 @@ const handlers = [
       },
     })
   }),
+  graphql.mutation('removeRequest', ({ query, variables }) => {
+    console.log(query)
+    if (returnError) {
+      return HttpResponse.json({
+        errors: [ {
+            "message": "Some Error",
+          },
+        ]},
+      )
+    }
+    return HttpResponse.json({
+      data: {
+        removeRequest: {
+          "id": "Inbound 1 ID",
+          "name": "some name",
+        },
+      },
+    })
+  }),
 ]
 
 const server = setupServer(...handlers)
@@ -127,6 +147,7 @@ const server = setupServer(...handlers)
 beforeAll(() => server.listen())
 beforeEach(() => {
   returnError = false
+  openFriends = true
 })
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
@@ -228,6 +249,33 @@ it('Successfully removes a friend', async() => {
   })
 })
 
+it('Successfully removes an inbound request', async() => {
+  createInstance()
+  await waitFor(() => {
+    screen.getByText('Inbound 1 Name')
+  })
+  const requests = screen.getAllByLabelText('Remove Request Icon')
+  fireEvent.click(requests[2])
+  fireEvent.click(screen.getByText('Agree'))
+  await waitFor(() => {
+    expect(screen.queryByText('Inbound 1 Name')).toBeNull()
+  })
+})
+
+it('Errors on removing a request', async() => {
+  createInstance()
+  await waitFor(() => {
+    screen.getByText('Inbound 1 Name')
+  })
+  returnError = true
+  const requests = screen.getAllByLabelText('Remove Request Icon')
+  fireEvent.click(requests[2])
+  fireEvent.click(screen.getByText('Agree'))
+  await waitFor(() => {
+    expect(screen.queryByText('Inbound 1 Name')).not.toBeNull()
+  })
+})
+
 it('Successfully Accepts Request', async() => {
   createInstance()
   await waitFor(() => {
@@ -241,6 +289,22 @@ it('Successfully Accepts Request', async() => {
     const inboundRequests = screen.getAllByLabelText('Inbound Icon')
     expect(inboundRequests.length).toEqual(1)
     expect(screen.getByText('Inbound 1 Name')).toBeDefined()
+  })
+})
+
+it('Fails to accept request', async() => {
+  createInstance()
+  await waitFor(() => {
+    screen.getByText('Inbound 1 Name')
+  })
+  returnError = true
+  const acceptRequest = screen.getAllByLabelText('Inbound Icon')
+  expect(acceptRequest.length).toEqual(2)
+  fireEvent.click(acceptRequest[0])
+  fireEvent.click(screen.getByText('Agree'))
+  await waitFor(() => {
+    const inboundRequests = screen.getAllByLabelText('Inbound Icon')
+    expect(inboundRequests.length).toEqual(2)
   })
 })
 
@@ -280,7 +344,47 @@ it('Closes page when clicking back', async() => {
   })
 })
 
-it('Alters when server is down', async() => {
+
+it('Alerts when trying to request and server is down', async() => {
+  let alerted = false
+  window.alert = () => {alerted = true}
+  createInstance()
+  await waitFor(() => {
+    screen.getByText('Inbound 1 Name')
+  })
+  server.close()
+  const acceptRequest = screen.getAllByLabelText('Inbound Icon')
+  expect(acceptRequest.length).toEqual(2)
+  fireEvent.click(acceptRequest[0])
+  fireEvent.click(screen.getByText('Agree'))
+  await waitFor(() => {
+    expect(alerted).toBeTruthy()
+  })
+})
+
+it('Alerts when trying to remove request and server is down', async() => {
+
+  const server = setupServer(...handlers)
+  server.listen()
+  server.resetHandlers()
+  
+
+  let alerted = false
+  window.alert = () => {alerted = true}
+  createInstance()
+  await waitFor(() => {
+    screen.getByText('Inbound 1 Name')
+  })
+  server.close()
+  const requests = screen.getAllByLabelText('Remove Request Icon')
+  fireEvent.click(requests[2])
+  fireEvent.click(screen.getByText('Agree'))
+  await waitFor(() => {
+    expect(alerted).toBeTruthy()
+  })
+})
+
+it('Alerts when server is down', async() => {
   let alerted = false
   server.close()
   window.alert = () => {alerted = true}

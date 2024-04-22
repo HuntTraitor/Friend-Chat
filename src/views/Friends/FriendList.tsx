@@ -23,6 +23,7 @@ import {RequestCard} from './RequestCard';
 import { FriendsContext, FriendsProvider } from '@/context/Friends';
 import { RequestContext } from '@/context/Requests';
 import { OpenMembersContext } from '@/context/OpenMembers';
+import { MembersProvider } from '@/context/Members';
 import { MemberList } from '../Members/MemberList';
 
 interface FriendRequest {
@@ -158,30 +159,32 @@ export function FriendList() {
           </Toolbar>
         </AppBar>
         <RequestContext.Provider value={{requests, setRequests}}>
-          <List>
-            {friends && 
-              friends.map((friend: any) => (
-                <ListItem key={friend.id}>
-                  <FriendCard friend={friend}/>
-                </ListItem>
-              ))}
-          </List>
-          <Divider />
-          <List>
-            {requests &&
-              requests.outbound?.map((request: any) => (
-                <ListItem key={request.id}>
-                  <RequestCard friend={request} bound={"outbound"}/>
-                </ListItem>
-              ))}
+          <MembersProvider>
+            <List>
+              {friends && 
+                friends.map((friend: any) => (
+                  <ListItem key={friend.id}>
+                    <FriendCard friend={friend}/>
+                  </ListItem>
+                ))}
+            </List>
+            <Divider />
+            <List>
               {requests &&
-                requests.inbound?.map((request: any) => (
-                <ListItem key={request.id}>
-                  <RequestCard friend={request} bound={"inbound"}/>
-                </ListItem>
-              ))}
-          </List>
-          <MemberList />
+                requests.outbound?.map((request: any) => (
+                  <ListItem key={request.id}>
+                    <RequestCard friend={request} bound={"outbound"}/>
+                  </ListItem>
+                ))}
+                {requests &&
+                  requests.inbound?.map((request: any) => (
+                  <ListItem key={request.id}>
+                    <RequestCard friend={request} bound={"inbound"}/>
+                  </ListItem>
+                ))}
+            </List>
+            <MemberList />
+          </MembersProvider>
         </RequestContext.Provider>
       </Dialog>
     </React.Fragment>
