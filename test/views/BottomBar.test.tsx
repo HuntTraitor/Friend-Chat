@@ -1,6 +1,7 @@
 import { render, screen,  waitFor, fireEvent } from '@testing-library/react'
 import { LoginContext } from '@/context/Login';
 import BottomBar from '@/views/BottomBar';
+import { NavigationProvider } from '@/context/Navigation';
 
 let accessToken = 'some old token'
 const setAccessToken = () => {accessToken = ''}
@@ -12,7 +13,9 @@ const setOpenFriends = () => {openFriends = true}
 it('Renders successfully',  async() => {
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <BottomBar openFriends={openFriends} setOpenFriends={setOpenFriends}/>
+      <NavigationProvider>
+        <BottomBar openFriends={openFriends} setOpenFriends={setOpenFriends}/>
+      </NavigationProvider>
     </LoginContext.Provider>
   )
   screen.getByLabelText('Home')
@@ -23,7 +26,9 @@ it('Renders successfully',  async() => {
 it('Clicks friends tab', async() => {
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <BottomBar openFriends={openFriends} setOpenFriends={setOpenFriends}/>
+      <NavigationProvider>
+        <BottomBar openFriends={openFriends} setOpenFriends={setOpenFriends}/>
+      </NavigationProvider>
     </LoginContext.Provider>
   )
 
@@ -36,7 +41,9 @@ it('Clicks friends tab', async() => {
 it('Clicks Logout', async() => {
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <BottomBar openFriends={openFriends} setOpenFriends={setOpenFriends}/>
+      <NavigationProvider>
+        <BottomBar openFriends={openFriends} setOpenFriends={setOpenFriends}/>
+      </NavigationProvider>
     </LoginContext.Provider>
   )
 
@@ -44,4 +51,20 @@ it('Clicks Logout', async() => {
   await waitFor(() => {
     expect(accessToken).toBe('')
   })
+})
+
+it('Clicks back to home', async() => {
+  render(
+    <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
+      <NavigationProvider>
+        <BottomBar openFriends={openFriends} setOpenFriends={setOpenFriends}/>
+      </NavigationProvider>
+    </LoginContext.Provider>
+  )
+
+  fireEvent.click(screen.getByLabelText('Friends'))
+  await waitFor(() => {
+    expect(openFriends).toBeTruthy()
+  })
+  fireEvent.click(screen.getByLabelText('Home'))
 })

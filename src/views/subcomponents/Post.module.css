@@ -30,3 +30,7 @@
 .content {
   padding-left: 25px
 }
+
+.postContainer {
+  max-width: 100%;
+}

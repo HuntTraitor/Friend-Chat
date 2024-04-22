@@ -102,6 +102,8 @@ const accessToken = 'some old token'
 const setAccessToken = () => {}
 const userName = ''
 const setUserName = () => {}
+const openFriends = false
+const setOpenFriends = () => {}
 
 
 it('Renders Post page correclty', async() => {
@@ -110,7 +112,7 @@ it('Renders Post page correclty', async() => {
 
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <PostPage />
+      <PostPage openFriends={openFriends} setOpenFriends={setOpenFriends}/>
     </LoginContext.Provider>
   )
 
@@ -126,7 +128,7 @@ it('Creates a new post', async() => {
 
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <PostPage />
+      <PostPage openFriends={openFriends} setOpenFriends={setOpenFriends}/>
     </LoginContext.Provider>
   )
 
@@ -144,7 +146,7 @@ it('Errors when request fails', async() => {
 
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <PostPage />
+      <PostPage openFriends={openFriends} setOpenFriends={setOpenFriends}/>
     </LoginContext.Provider>
   )
 
@@ -158,7 +160,7 @@ it('Errors when sending a post', async() => {
 
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <PostPage />
+      <PostPage openFriends={openFriends} setOpenFriends={setOpenFriends}/>
     </LoginContext.Provider>
   )
 
@@ -179,7 +181,7 @@ it('Alerts on server down', async() => {
 
   render(
     <LoginContext.Provider value={{userName, setUserName, accessToken, setAccessToken}}>
-      <PostPage />
+      <PostPage openFriends={openFriends} setOpenFriends={setOpenFriends}/>
     </LoginContext.Provider>
   )
 

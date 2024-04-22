@@ -18,6 +18,7 @@ import { LoginContext } from '@/context/Login';
 import { ListItem } from '@mui/material';
 import { MemberCard } from './MemberCard';
 import { RefetchContext } from '@/context/Refetch';
+import { NavigationContext } from '@/context/Navigation';
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -58,12 +59,19 @@ const fetchMembers = (setMembers: Function, accessToken: string) => {
 export function MemberList({openMembers, setOpenMembers}: any) {
   const [members, setMembers] = React.useState([])
   const {refetch, setRefetch} = React.useContext(RefetchContext)
+  const {navigation} = React.useContext(NavigationContext)
   const loginContext = React.useContext(LoginContext)
 
   React.useEffect(() => {
     fetchMembers(setMembers, loginContext.accessToken)
     setRefetch(false)
   }, [loginContext.accessToken, refetch])
+
+  React.useEffect(() => {
+    if (navigation === 0) {
+      handleClose()
+    }
+  }, [navigation])
 
   const handleClose = () => {
     setOpenMembers(false);
@@ -76,6 +84,11 @@ export function MemberList({openMembers, setOpenMembers}: any) {
         open={openMembers}
         onClose={handleClose}
         TransitionComponent={Transition}
+        hideBackdrop={true}
+        sx={{marginBottom: '55px'}}
+        PaperProps={{
+          elevation: 0,
+        }}
       >
         <AppBar sx={{ position: 'relative' , backgroundColor: 'purple'}}>
           <Toolbar>

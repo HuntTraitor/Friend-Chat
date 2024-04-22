@@ -20,6 +20,7 @@ import { ListItem } from '@mui/material';
 import {RequestCard} from './RequestCard';
 import { MemberList } from '../Members/MemberList';
 import { RefetchContext } from '@/context/Refetch';
+import { NavigationContext } from '@/context/Navigation';
 
 interface Friend {
   id: string;
@@ -97,6 +98,7 @@ export function FriendList({openFriends, setOpenFriends}: any) {
   const loginContext = React.useContext(LoginContext)
   const [friends, setFriends] = React.useState<Friend[]>([])
   const [openMembers, setOpenMembers] = React.useState(false)
+  const {navigation, setNavigation} = React.useContext(NavigationContext)
   const [requests, setRequests] = React.useState<RequestState>({
     inbound: [],
     outbound: []
@@ -112,7 +114,14 @@ export function FriendList({openFriends, setOpenFriends}: any) {
 
   const handleClose = () => {
     setOpenFriends(false);
+    setNavigation(0)
   };
+
+  React.useEffect(() => {
+    if (navigation === 0) {
+      handleClose()
+    }
+  }, [navigation])
 
   return (
     <React.Fragment>
@@ -121,6 +130,11 @@ export function FriendList({openFriends, setOpenFriends}: any) {
         open={openFriends}
         onClose={handleClose}
         TransitionComponent={Transition}
+        hideBackdrop={true}
+        sx={{marginBottom: '55px'}}
+        PaperProps={{
+          elevation: 0,
+        }}
       >
         <AppBar sx={{ position: 'relative', backgroundColor: 'purple' }}>
           <Toolbar>

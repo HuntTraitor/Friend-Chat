@@ -6,7 +6,6 @@ import { setupServer } from 'msw/node';
 
 import  {Confirmation}  from '../../src/views/Confirmation'
 import { LoginContext } from '@/context/Login';
-import { FriendsContext } from '@/context/Friends';
 
 const mockConfirmation = {
 

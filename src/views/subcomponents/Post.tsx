@@ -27,14 +27,14 @@ function formatDateTime(isoString: string): string {
 
 export function Post({post}: any) {
   return (
-    <div>
+    <div className={styles.postContainer}>
       <div className={styles.headerContainer}>
         <Avatar aria-label="profile pic" />
         <p className={styles.username}>{post.member.name}</p>
         <p className={styles.date}>{formatDateTime(post.posted)}</p>
       </div>
       <div className={styles.content}>
-        {post.image && <img src={post.image} alt="Post Image" />}
+        {post.image && <img src={post.image} alt="Post Image" style={{ maxWidth: '100%' }} />}
         <div>
           {post.content}
         </div>

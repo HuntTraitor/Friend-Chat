@@ -10,13 +10,11 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import { LoginContext } from '@/context/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PeopleIcon from '@mui/icons-material/People';
+import { NavigationContext } from '@/context/Navigation';
 
-/**
- *
- * @return {object} JSX
- */
 export default function BottomBar({setOpenFriends}: any) {
   const loginContext = React.useContext(LoginContext)
+  const {navigation, setNavigation} = React.useContext(NavigationContext)
   const ref = React.useRef(null);
 
   const logout = () => {
@@ -36,24 +34,22 @@ export default function BottomBar({setOpenFriends}: any) {
         elevation={3}>
         <BottomNavigation
           showLabels
-          value={0}
-          sx={{
-            '& .Mui-selected': {
-              color: 'purple', // Color for the selected label
-            },
-            '& .Mui-selected .MuiSvgIcon-root': {
-              color: 'purple', // Color for the selected icon
-            },
-          }}
+          value={navigation}
         >
           <BottomNavigationAction
             aria-label="Home"
             icon={<HomeIcon />}
+            onClick={() => {
+              setNavigation(0)
+            }}
           />
           <BottomNavigationAction
             aria-label="Friends"
             icon={<PeopleIcon />}
-            onClick={() => setOpenFriends(true)}
+            onClick={() => {
+              setOpenFriends(true)
+              setNavigation(1)
+            }}
           />
           <BottomNavigationAction
             aria-label="Logout"
