@@ -23,6 +23,7 @@ import {RequestCard} from './RequestCard';
 import { FriendsContext, FriendsProvider } from '@/context/Friends';
 import { RequestContext } from '@/context/Requests';
 import { OpenMembersContext } from '@/context/OpenMembers';
+import { MemberList } from '../Members/MemberList';
 
 interface FriendRequest {
   inbound: Array<{
@@ -35,6 +36,16 @@ interface FriendRequest {
   }>; 
 }
 
+interface Friend {
+  id: string;
+  name: string;
+}
+
+interface RequestState {
+  inbound: Friend[];
+  outbound: Friend[];
+}
+
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -44,8 +55,8 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const fetchFriends = (setFriends: Function, setError: Function, accessToken: string) => {
-  const query = {query: `{friend {id name}}`}
+const fetchFriends = (setFriends: Function, accessToken: string) => {
+  const query = {query: `query friend{friend {id name}}`}
   fetch('/api/graphql', {
     method: 'POST',
     body: JSON.stringify(query),
@@ -59,21 +70,18 @@ const fetchFriends = (setFriends: Function, setError: Function, accessToken: str
     })
     .then((json) => {
       if (json.errors) {
-        setError(`${json.errors[0].message}`)
         setFriends([])
       } else {
-        setError('')
         setFriends(json.data.friend)
       }
     })
     .catch((e: Error) => {
-      setError(e.toString())
       alert(e.toString())
     })
 }
 
-const fetchReqeusts = (setRequests: Function, setError: Function, accessToken: string) => {
-  const query = {query: `{request {
+const fetchReqeusts = (setRequests: Function, accessToken: string) => {
+  const query = {query: `query request{request {
     inbound {id name}
     outbound {id name}
   }}`}
@@ -90,15 +98,12 @@ const fetchReqeusts = (setRequests: Function, setError: Function, accessToken: s
   })
   .then((json) => {
     if (json.errors) {
-      setError(`${json.errors[0].message}`)
       setRequests([])
     } else {
-      setError('')
       setRequests(json.data.request)
     }
   })
   .catch((e) => {
-    setError(e.toString())
     alert(e.toString())
   })
 }
@@ -107,25 +112,20 @@ export function FriendList() {
   const {openFriends, setOpenFriends} = React.useContext(OpenFriendsContext)
   const loginContext = React.useContext(LoginContext)
   const {friends, setFriends} = React.useContext(FriendsContext)
-  const {requests, setRequests} = React.useContext(RequestContext)
+  const [requests, setRequests] = React.useState<RequestState>({
+    inbound: [],
+    outbound: []
+  });
   const {openMembers, setOpenMembers} = React.useContext(OpenMembersContext)
-  const [error, setError] = React.useState('Logged out')
 
   React.useEffect(() => {
-    fetchFriends(setFriends, setError, loginContext.accessToken)
-    fetchReqeusts(setRequests, setError, loginContext.accessToken)
+    fetchFriends(setFriends, loginContext.accessToken)
+    fetchReqeusts(setRequests, loginContext.accessToken)
   }, [loginContext.accessToken])
 
-  React.useEffect(() => {
-    if (error === "Access denied! You don't have permission for this action!") {
-      loginContext.setAccessToken('')
-      localStorage.removeItem('accessToken')
-    }
-  }, [error])
-
-  const handleClickOpen = () => {
-    setOpenFriends(true);
-  };
+  // const handleClickOpen = () => {
+  //   setOpenFriends(true);
+  // };
 
   const handleClose = () => {
     setOpenFriends(false);
@@ -145,41 +145,44 @@ export function FriendList() {
               edge="start"
               color="inherit"
               onClick={handleClose}
-              aria-label="close"
+              aria-label="close friends"
             >
               <ArrowBackIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Friends
             </Typography>
-            <Button autoFocus color="inherit" onClick={() => setOpenMembers(true)}>
+            <Button autoFocus color="inherit" onClick={() => setOpenMembers(true)} aria-label='Add Members Button'>
               <PersonAddIcon />
             </Button>
           </Toolbar>
         </AppBar>
-        <List>
-          {friends && 
-            friends.map((friend: any) => (
-              <ListItem key={friend.id}>
-                <FriendCard friend={friend}/>
-              </ListItem>
-            ))}
-        </List>
-        <Divider />
-        <List>
-          {requests &&
-            requests.outbound.map((request: any) => (
-              <ListItem key={request.id}>
-                <RequestCard friend={request} bound={"outbound"}/>
-              </ListItem>
-            ))}
+        <RequestContext.Provider value={{requests, setRequests}}>
+          <List>
+            {friends && 
+              friends.map((friend: any) => (
+                <ListItem key={friend.id}>
+                  <FriendCard friend={friend}/>
+                </ListItem>
+              ))}
+          </List>
+          <Divider />
+          <List>
             {requests &&
-              requests.inbound.map((request: any) => (
-              <ListItem key={request.id}>
-                <RequestCard friend={request} bound={"inbound"}/>
-              </ListItem>
-            ))}
-        </List>
+              requests.outbound?.map((request: any) => (
+                <ListItem key={request.id}>
+                  <RequestCard friend={request} bound={"outbound"}/>
+                </ListItem>
+              ))}
+              {requests &&
+                requests.inbound?.map((request: any) => (
+                <ListItem key={request.id}>
+                  <RequestCard friend={request} bound={"inbound"}/>
+                </ListItem>
+              ))}
+          </List>
+          <MemberList />
+        </RequestContext.Provider>
       </Dialog>
     </React.Fragment>
   );

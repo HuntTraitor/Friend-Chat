@@ -35,7 +35,6 @@ const removeFriend = (friend: any, setFriends: Function, friends: any, accessTok
     })
 }
 
-
 export default function FriendCard({friend}: any) {
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
   const loginContext = React.useContext(LoginContext)

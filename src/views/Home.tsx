@@ -35,13 +35,13 @@ export function Home() {
         <OpenFriendsProvider>
           <OpenMembersProvider>
             <Topbar />
-              <FriendsProvider>
-                <RequestProvider>
+              {/* <FriendsProvider> */}
+                {/* <RequestProvider> */}
                   <PostPage />
-                  <FriendList />
-                  <MemberList />
-                </RequestProvider>
-              </FriendsProvider>
+                  {/* <FriendList /> */}
+                  {/* <MemberList /> */}
+                {/* </RequestProvider> */}
+              {/* </FriendsProvider> */}
             <BottomBar />
           </OpenMembersProvider>
         </OpenFriendsProvider>

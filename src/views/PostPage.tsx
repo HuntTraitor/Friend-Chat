@@ -10,6 +10,12 @@ import SendIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
 import { FriendsContext } from '@/context/Friends';
+import { FriendList } from './Friends/FriendList';
+
+interface Friend {
+  id: string;
+  name: string;
+}
 
 const fetchPosts = (setPosts: Function, setError: Function, accessToken: string) => {
   const query = {query: `query post { post(page: 1 size: 20) {id member {id name} posted content image}}`}
@@ -43,7 +49,8 @@ export default function PostPage() {
   const loginContext = React.useContext(LoginContext)
   const [posts, setPosts] = React.useState<any[]>([])
   const [error, setError] = React.useState('Logged out')
-  const {friends, setFriends} = React.useContext(FriendsContext)
+  const [friends, setFriends] = React.useState<Friend[]>([])
+  // const {friends, setFriends} = React.useContext(FriendsContext)
 
   const [messageInput, setMessageInput] = React.useState('');
   const handleInputChange = (event: any) => {
@@ -151,6 +158,9 @@ export default function PostPage() {
         </IconButton>
       </Toolbar>
     </AppBar>
+    <FriendsContext.Provider value={{friends, setFriends}}>
+      <FriendList />
+    </FriendsContext.Provider>
   </React.Fragment>
   );
 }
