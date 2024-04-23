@@ -5,6 +5,7 @@ import Topbar from './Topbar'
 import PostPage from './PostPage'
 import { RefetchProvider } from '@/context/Refetch'
 import { NavigationProvider } from '@/context/Navigation'
+import EmojiPicker from './EmojiPicker'
 
 export function Home() {
   const loginContext = React.useContext(LoginContext)

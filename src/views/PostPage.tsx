@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
 import { FriendList } from './Friends/FriendList';
 import { RefetchContext } from '@/context/Refetch';
+import EmojiPicker from './EmojiPicker';
 
 interface Friend {
   id: string;
@@ -169,6 +170,7 @@ export default function PostPage({openFriends, setOpenFriends}: any) {
           >
           <SendIcon aria-label="send post"/>
         </IconButton>
+        <EmojiPicker messageInput={messageInput} setMessageInput={setMessageInput}/>
       </Toolbar>
     </AppBar>
     <FriendList openFriends={openFriends} setOpenFriends={setOpenFriends}/>
